@@ -464,6 +464,7 @@ section.view {
 
 
 /* Адаптація для мобільних пристроїв */
+/*
 @media (max-width: 768px) {
   body {
     font-size: 16px;
@@ -533,5 +534,75 @@ section.view {
   .view,
   section {
     padding: 1rem 0.5rem;
+  }
+}
+*/
+
+
+
+
+
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+    padding: 0.5rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .filters,
+  .report-settings,
+  .report-details,
+  .report-breakdown,
+  .transfer,
+  .form-row,
+  .table-wrapper {
+    flex-direction: column !important;
+    align-items: stretch;
+  }
+
+  .report-breakdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .report-breakdown table {
+    width: 100%;
+    max-width: 300px;
+    font-size: 14px;
+  }
+
+  .filters label,
+  .form-row label,
+  .form-row input,
+  .form-row select,
+  .form-row button {
+    width: 100%;
+    margin: 0.25rem 0;
+  }
+
+  table th, table td {
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .actions button {
+    margin: 2px 0;
+    padding: 4px 6px;
+  }
+
+  .nav-buttons {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
   }
 }
