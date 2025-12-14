@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="uk">
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Домашні фінанси
+  </title>
+  <link href="styles.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#00bcd4">
+ </head>
+ <body>
+  <header class="app-header">
+   <div>
+    <h1>
+     Домашній фінансовий облік
+    </h1>
+    <p>
+     Локальний застосунок для керування сімейними фінансами
+    </p>
+   </div>
+   <div class="header-actions">
+    <button class="ghost" id="reset-data-btn">
+     Очистити дані
+    </button>
+    <button class="ghost" id="export-data-btn">
+     Експорт JSON
+    </button>
+    <label class="import-label">
+     Імпорт JSON
+     <input accept="application/json" id="import-data-input" type="file">
+    </label>
+   </div>
+  </header>
+  <nav class="app-nav">
+   <button class="active" data-view="accounts">
+    Рахунки
+   </button>
+   <button data-view="expenses">
+    Витрати
+   </button>
+   <button data-view="income">
+    Доходи
+   </button>
+   <button data-view="loans">
+    Позики
+   </button>
+   <button data-view="reports">
+    Звіти
+   </button>
+   <button data-view="currencies">
+    Валюти
+   </button>
+   <button data-view="members">
+    Члени сімʼї
+   </button>
+  </nav>
+  <main>
+   <!-- Члени сімʼї -->
+   <section class="view hidden" id="members">
+    <div class="card">
+     <h2>
+      Члени сімʼї
+     </h2>
+     <form class="form-grid" id="member-form">
+      <input id="member-id" name="member-id" type="hidden">
+      <label>
+       Імʼя
+       <input id="member-name" name="member-name" placeholder="Напр. Олена" required>
+      </label>
+      <label>
+       Роль/опис
+       <input id="member-role" name="member-role" placeholder="Напр. Мама">
+      </label>
+      <button type="submit">
+       Зберегти
+      </button>
+      <button class="ghost" id="member-cancel-btn" type="button">
+       Скасувати
+      </button>
+     </form>
+     <div class="table-scroll-container">
+      <table>
+       <thead>
+        <tr>
+         <th>
+          Імʼя
+         </th>
+         <th>
+          Роль
+         </th>
+         <th>
+          Дії
+         </th>
+        </tr>
+       </thead>
+       <tbody id="members-table">
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </section>
+   <!-- Рахунки -->
+   <section class="view" id="accounts">
+    <div class="card">
+     <h2>
+      Рахунки та залишки
+     </h2>
+     <form class="form-grid" id="account-form">
+      <input id="account-id" name="account-id" type="hidden">
+      <label>
+       Назва рахунку
+       <input id="account-name" name="account-name" placeholder="Напр. Загальна картка" required>
+      </label>
+      <label>
+       Власник
+       <select id="account-owner" name="account-owner" required>
+       </select>
+      </label>
+      <label>
+       Поточний баланс
+       <input id="account-balance" name="account-balance" required step="0.01" type="number">
+      </label>
+      <label>
+       Валюта
+       <select id="account-currency" name="account-currency" required>
+       </select>
+      </label>
+      <label>
+       Замітка
+       <input id="account-note" name="account-note" placeholder="Напр. зарплатна">
+      </label>
+      <button type="submit">
+       Зберегти
+      </button>
+      <button class="ghost" id="account-cancel-btn" type="button">
+       Скасувати
+      </button>
+     </form>
+     <div class="table-wrapper">
+      <div class="table-scroll-container">
+       <table>
+        <thead>
+         <tr>
+          <th>
+           Назва
+          </th>
+          <th>
+           Власник
+          </th>
+          <th>
+           Валюта
+          </th>
+          <th>
+           Баланс
+          </th>
+          <th>
+           Замітки
+          </th>
+          <th>
+           Дії
+          </th>
+         </tr>
+        </thead>
+        <tbody id="accounts-table">
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+    <div class="card" style="margin-top: 1rem">
+     <h2>
+      Переказ між рахунками
+     </h2>
+     <form class="form-grid" id="transfer-form">
+      <label>
+       З рахунку
+       <select id="transfer-from-account" name="transfer-from-account" required>
+       </select>
+      </label>
+      <label>
+       На рахунок
+       <select id="transfer-to-account" name="transfer-to-account" required>
+       </select>
+      </label>
+      <label>
+       Коефіцієнт (курс)
+       <input id="transfer-rate" min="0.0001" name="transfer-rate" required step="0.0001" type="number" value="1">
+      </label>
+      <label>
+       Сума
+       <input id="transfer-amount" name="transfer-amount" required step="0.01" type="number">
+      </label>
+      <button type="submit">
+       Переказати
+      </button>
+     </form>
+    </div>
+   </section>
+   <!-- Витрати -->
+   <section class="view hidden" id="expenses">
+    <div class="card">
+     <div class="section-head">
+      <h2>
+       Витрати
+      </h2>
+      <div class="filters">
+       <label>
+        Член
+        <select id="expense-member-filter">
+        </select>
+       </label>
+       <label>
+        Рахунок
+        <select id="expense-account-filter">
+        </select>
+       </label>
+       <label>
+        Категорія
+        <input id="expense-category-filter" placeholder="Введіть текст">
+       </label>
+		<label>
+		  Підкатегорія
+		  <input id="expense-subcategory-filter" list="expense-subcategory-filter-options" placeholder="Підкатегорія">
+		</label>
+		<datalist id="expense-subcategory-filter-options"></datalist>
+		<label>
+		  З дати
+		  <input type="date" id="expense-from-date">
+		</label>
+		<label>
+		  По дату
+		  <input type="date" id="expense-to-date">
+		</label>
+       <label>
+        Сортування
+        <select id="expense-sort">
+         <option value="date-desc">
+          Дата ↓
+         </option>
+         <option value="date-asc">
+          Дата ↑
+         </option>
+         <option value="amount-desc">
+          Сума ↓
+         </option>
+         <option value="amount-asc">
+          Сума ↑
+         </option>
+        </select>
+       </label>
+      </div>
+     </div>
+     <form class="form-grid" id="expense-form">
+      <input id="expense-id" name="expense-id" type="hidden">
+      <label>
+       Дата
+       <input id="expense-date" name="expense-date" required type="date">
+       <label><input type="checkbox" id="remember-expense-date"></label>
+      </label>
+      <label>
+       Член сімʼї
+       <select id="expense-member" name="expense-member" required>
+        <label><input type="checkbox" id="remember-expense-member"></label>
+       </select>
+      </label>
+      <label>
+       Рахунок
+       <select id="expense-account" name="expense-account" required>
+        <label><input type="checkbox" id="remember-expense-account"></label>
+       </select>
+      </label>
+      <label>
+       Категорія
+       <input id="expense-category" list="expense-category-options" name="expense-category" placeholder="Напр. Продукти" required>
+       <label><input type="checkbox" id="remember-expense-category"></label>
+      </label>
+      <label>
+       Підкатегорія
+       <input id="expense-subcategory" list="expense-subcategory-options" name="expense-subcategory" placeholder="Напр. Супермаркет">
+      </label>
+      <label>
+       Опис
+       <input id="expense-description" name="expense-description" placeholder="За бажанням">
+      </label>
+      <label>
+       Сума
+       <input id="expense-amount" name="expense-amount" required step="0.01" type="number">
+      </label>
+      <label>
+       Валюта
+       <select id="expense-currency" name="expense-currency" required>
+       </select>
+      </label>
+      <button type="submit">
+       Зберегти
+      </button>
+      <button class="ghost" id="expense-cancel-btn" type="button">
+       Скасувати
+      </button>
+     </form>
+     <datalist id="expense-category-options">
+     </datalist>
+     <datalist id="expense-subcategory-options">
+     </datalist>
+     <div class="table-wrapper">
+      <div class="table-scroll-container">
+       <table>
+        <thead>
+         <tr>
+          <th>
+           Дата
+          </th>
+          <th>
+           Член
+          </th>
+          <th>
+           Рахунок
+          </th>
+          <th>
+           Категорія
+          </th>
+          <th>
+           Підкатегорія
+          </th>
+          <th>
+           Опис
+          </th>
+          <th>
+           Сума
+          </th>
+          <th>
+           Дії
+          </th>
+         </tr>
+        </thead>
+        <tbody id="expenses-table">
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- Доходи -->
+   <section class="view hidden" id="income">
+    <div class="card">
+     <div class="section-head">
+      <h2>
+       Доходи
+      </h2>
+      <div class="filters">
+       <label>
+        Член
+        <select id="income-member-filter">
+        </select>
+       </label>
+       <label>
+        Рахунок
+        <select id="income-account-filter">
+        </select>
+       </label>
+       <label>
+        Джерело
+        <input id="income-source-filter" list="income-source-filter-options" placeholder="Введіть текст">
+       </label>
+		<label>
+		  З дати
+		  <input type="date" id="income-from-date">
+		</label>
+		<label>
+		  По дату
+		  <input type="date" id="income-to-date">
+		</label>
+       <label>
+        Сортування
+        <select id="income-sort">
+         <option value="date-desc">
+          Дата ↓
+         </option>
+         <option value="date-asc">
+          Дата ↑
+         </option>
+         <option value="amount-desc">
+          Сума ↓
+         </option>
+         <option value="amount-asc">
+          Сума ↑
+         </option>
+        </select>
+       </label>
+      </div>
+	  <datalist id="income-source-filter-options"></datalist>
+     </div>
+     <form class="form-grid" id="income-form">
+      <input id="income-id" name="income-id" type="hidden">
+      <label>
+       Дата
+       <input id="income-date" name="income-date" required type="date">
+       <label><input type="checkbox" id="remember-income-date"></label>
+      </label>
+      <label>
+       Член сімʼї
+       <select id="income-member" name="income-member" required>
+         <label><input type="checkbox" id="remember-income-member"></label>
+       </select>
+      </label>
+      <label>
+       Рахунок
+       <select id="income-account" name="income-account" required>
+        <label><input type="checkbox" id="remember-income-account"></label>
+       </select>
+      </label>
+      <label>
+       Джерело
+       <input id="income-source" name="income-source" placeholder="Напр. Зарплата" list="income-source-options" required>
+       <label><input type="checkbox" id="remember-income-source"></label>
+      </label>
+      <label>
+       Опис
+       <input id="income-description" name="income-description" placeholder="Додаткові деталі">
+      </label>
+      <label>
+       Сума
+       <input id="income-amount" name="income-amount" required step="0.01" type="number">
+      </label>
+      <label>
+       Валюта
+       <select id="income-currency" name="income-currency" required>
+       </select>
+      </label>
+      <button type="submit">
+       Зберегти
+      </button>
+      <button class="ghost" id="income-cancel-btn" type="button">
+       Скасувати
+      </button>
+     </form>
+	 <datalist id="income-source-options">
+	 </datalist>
+     <div class="table-wrapper">
+      <div class="table-scroll-container">
+       <table>
+        <thead>
+         <tr>
+          <th>
+           Дата
+          </th>
+          <th>
+           Джерело
+          </th>
+          <th>
+           Член
+          </th>
+          <th>
+           Рахунок
+          </th>
+          <th>
+           Опис
+          </th>
+          <th>
+           Валюта
+          </th>
+          <th>
+           Сума
+          </th>
+          <th>
+           Дії
+          </th>
+         </tr>
+        </thead>
+        <tbody id="income-table">
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- Позики -->
+   <section class="view hidden" id="loans">
+    <div class="card">
+	<div class="tab-header-row">
+     <h2>
+      Позики
+     </h2>
+		<div class="filters" style="margin-bottom: 1rem;">
+		  <label>
+			Статус
+			<select id="loan-status-filter">
+			  <option value="">Всі</option>
+			  <option value="active">Активна</option>
+			  <option value="paid">Повернена</option>
+			  <option value="given">Надана іншому</option>
+			</select>
+		  </label>
+		  <label>
+			Інша сторона
+			<input type="text" id="loan-counterparty-filter" list="loan-counterparty-filter-options" placeholder="Введіть або оберіть">
+		  </label>
+		  <datalist id="loan-counterparty-filter-options"></datalist>
+		</div> 
+	</div>
+     <form class="form-grid" id="loan-form">
+      <input id="loan-id" name="loan-id" type="hidden">
+      <label>
+       Член сімʼї
+       <select id="loan-member" name="loan-member" required>
+       </select>
+      </label>
+      <label>
+       Інша сторона
+       <input id="loan-counterparty" name="loan-counterparty" placeholder="Кому винні або хто винен вам" list="loan-counterparty-options">
+      </label>
+      <label>
+       З рахунку
+       <select id="loan-from-account" name="loan-from-account">
+       </select>
+      </label>
+      <label>
+       На рахунок
+       <select id="loan-to-account" name="loan-to-account">
+       </select>
+      </label>
+      <label>
+       Тип
+       <select id="loan-direction" name="loan-direction" required>
+        <option value="owe">
+         Ми винні
+        </option>
+        <option value="lend">
+         Нам винні
+        </option>
+       </select>
+      </label>
+      <label>
+       Сума
+       <input id="loan-amount" name="loan-amount" required step="0.01" type="number">
+      </label>
+      <label>
+       Валюта
+       <select id="loan-currency" name="loan-currency" required>
+       </select>
+      </label>
+      <label>
+       Дата
+       <input id="loan-date" name="loan-date" required type="date">
+      </label>
+      <label>
+       Статус
+       <select id="loan-status" name="loan-status" required>
+        <option value="active">
+         Активна
+        </option>
+        <option value="paid">
+         Повернена
+        </option>
+        <option value="given">
+         Надана іншому
+        </option>
+       </select>
+      </label>
+      <label>
+       Нотатка
+       <input id="loan-note" name="loan-note" placeholder="Умови повернення">
+      </label>
+      <button type="submit">
+       Зберегти
+      </button>
+      <button class="ghost" id="loan-cancel-btn" type="button">
+       Скасувати
+      </button>
+     </form>
+	 <datalist id="loan-counterparty-options">
+	 </datalist>
+     <div class="table-wrapper">
+      <div class="table-scroll-container">
+       <table>
+        <thead>
+         <tr>
+          <th>
+           Дата
+          </th>
+          <th>
+           Член сімʼї
+          </th>
+          <th>
+           Інша сторона
+          </th>
+          <th>
+           З рахунку
+          </th>
+          <th>
+           На рахунок
+          </th>
+          <th>
+           Сума
+          </th>
+          <th>
+           Тип
+          </th>
+          <th>
+           Статус
+          </th>
+          <th>
+           Нотатка
+          </th>
+          <th>
+           Дії
+          </th>
+         </tr>
+        </thead>
+        <tbody id="loans-table">
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+   </section>
+   <!-- Звіти -->
+   <section class="view hidden" id="reports">
+    <div class="card">
+     <h2>
+      Звіти
+     </h2>
+     <div class="report-grid" id="report-cards">
+     </div>
+     <div class="report-details">
+      <div>
+       <h3>
+        Баланс по членах
+       </h3>
+       <ul id="report-members">
+       </ul>
+      </div>
+      <div>
+       <h3>
+        Категорії витрат
+       </h3>
+       <ul id="report-expense-categories">
+       </ul>
+      </div>
+      <div>
+       <h3>
+        Джерела доходів
+       </h3>
+       <ul id="report-income-sources">
+       </ul>
+      </div>
+     </div>
+    </div>
+	<hr style="margin: 2rem 0">
+	<div class="report-settings">
+	  <h3>Динаміка доходів і витрат</h3>
+	  <div class="filters">
+		<label>
+		  З дати
+		  <input type="date" id="report-from-date">
+		</label>
+		<label>
+		  По дату
+		  <input type="date" id="report-to-date">
+		</label>
+		<label>
+		  Групувати по
+		  <select id="report-grouping">
+			<option value="day">Дні</option>
+			<option value="week">Тижні</option>
+			<option value="month" selected>Місяці</option>
+			<option value="year">Роки</option>
+		  </select>
+		</label>
+		<button id="generate-report-chart">Побудувати</button>
+	  </div>
+	  <canvas id="report-chart" height="100"></canvas>
+		<div id="report-breakdown" class="report-breakdown-tables">
+		  <div>
+			<h4>Категорії витрат</h4>
+			<table>
+			  <tbody id="report-period-expense-categories"></tbody>
+			</table>
+		  </div>
+		  <div>
+			<h4>Джерела доходів</h4>
+			<table>
+			  <tbody id="report-period-income-sources"></tbody>
+			</table>
+		  </div>
+		</div>
+	</div>
+   </section>
+   <!-- Валюти -->
+   <section class="view hidden" id="currencies">
+    <div class="card">
+     <h2>
+      Валюти
+     </h2>
+     <form class="form-grid" id="currency-form">
+      <input id="currency-id" name="currency-id" type="hidden">
+      <label>
+       Назва
+       <input id="currency-name" name="currency-name" placeholder="Напр. Долар США" required>
+      </label>
+      <label>
+       Код
+       <input id="currency-code" name="currency-code" placeholder="Напр. USD" required>
+      </label>
+      <label>
+       Курс до основної (за 1 одиницю)
+       <input id="currency-rate" min="0.0001" name="currency-rate" required step="0.0001" type="number">
+      </label>
+      <button type="submit">
+       Зберегти
+      </button>
+      <button class="ghost" id="currency-cancel-btn" type="button">
+       Скасувати
+      </button>
+     </form>
+     <div class="section-head" style="margin-top: 1.5rem">
+      <h3>
+       Основна валюта
+      </h3>
+      <label>
+       Обрати
+       <select id="base-currency-select">
+       </select>
+      </label>
+     </div>
+     <div class="table-wrapper">
+      <div class="table-scroll-container">
+       <table>
+        <thead>
+         <tr>
+          <th>
+           Назва
+          </th>
+          <th>
+           Код
+          </th>
+          <th>
+           Курс до основної
+          </th>
+          <th>
+           Дії
+          </th>
+         </tr>
+        </thead>
+        <tbody id="currencies-table">
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main>
+  <script src="app.js">
+  </script>
+ 
+<script>document.addEventListener('DOMContentLoaded', () => { loadDB(); });</script>
+	<script>
+	  if ("serviceWorker" in navigator) {
+		navigator.serviceWorker.register("service-worker.js")
+		  .then(reg => console.log("Service Worker зареєстрований", reg))
+		  .catch(err => console.error("Service Worker помилка", err));
+	  }
+	</script>
+</body>
+</html>
