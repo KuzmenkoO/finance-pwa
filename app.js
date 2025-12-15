@@ -825,16 +825,48 @@ function handleFormSubmit(formId, collectionKey, preparePayload, afterChange) {
 
     
 saveState();
+
+let selectedMember = null;
+let selectedAccount = null;
+if (formId === "expense-form") {
+  selectedMember = form.querySelector("#expense-member")?.value;
+  selectedAccount = form.querySelector("#expense-account")?.value;
+}
+
+
 const activeView = document.querySelector(".app-nav button.active")?.dataset.view;
 if (activeView) {
   const select = document.querySelector(`#${activeView.slice(0, -1)}-currency`);
   if (select) rememberCurrency(activeView, select.value);
 }
+
 renderAll();
 
-    form.reset();
-    if (idField) idField.value = "";
-    setDefaultDates();
+if (formId === "expense-form") {
+  if (selectedMember) {
+    const memberSelect = document.querySelector("#expense-member");
+    if (memberSelect) memberSelect.value = selectedMember;
+  }
+  if (selectedAccount) {
+    const accountSelect = document.querySelector("#expense-account");
+    if (accountSelect) accountSelect.value = selectedAccount;
+  }
+}
+
+
+    if (formId === "expense-form") {
+      // ✅ Часткове очищення тільки для форми витрат
+      const amountInput = form.querySelector("#expense-amount");
+      if (amountInput) amountInput.value = "";
+      if (idField) idField.value = "";
+      setDefaultDates();
+    } else {
+      // Для інших форм — повне очищення
+      form.reset();
+      if (idField) idField.value = "";
+      setDefaultDates();
+    }
+
   });
 }
 
@@ -1106,7 +1138,7 @@ function initExpenses() {
       if (previous) applyEffect(previous, -1);
       if (next) applyEffect(next, 1);
     }
-  );
+);
 
   attachCancel("expense-cancel-btn", "expense-form");
 
@@ -1679,12 +1711,6 @@ document.getElementById("generate-report-chart").addEventListener("click", () =>
 	  expenseByCategory[item.category] += item.amount;
 	});
 
-//	const expenseList = document.getElementById("report-period-expense-categories");
-//	expenseList.innerHTML = Object.entries(expenseByCategory)
-//	  .sort((a, b) => b[1] - a[1])
-//	  .map(([cat, sum]) => `<tr><td>${cat}</td><td>${formatMoney(sum)}</td></tr>`)
-//	  .join("");
-
 	const totalExpenses = Object.values(expenseByCategory).reduce((a, b) => a + b, 0);
 	const expenseTable = document.getElementById("report-period-expense-categories");
 	expenseTable.innerHTML = `
@@ -1710,11 +1736,6 @@ document.getElementById("generate-report-chart").addEventListener("click", () =>
 	  incomeBySource[item.source] += item.amount;
 	});
 
-//	const incomeList = document.getElementById("report-period-income-sources");
-//	incomeList.innerHTML = Object.entries(incomeBySource)
-//	  .sort((a, b) => b[1] - a[1])
-//	  .map(([src, sum]) => `<tr><td>${src}</td><td>${formatMoney(sum)}</td></tr>`)
-//	  .join("");
 	const totalIncome = Object.values(incomeBySource).reduce((a, b) => a + b, 0);
 	const incomeTable = document.getElementById("report-period-income-sources");
 	incomeTable.innerHTML = `
