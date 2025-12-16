@@ -532,21 +532,21 @@ function renderExpenses() {
       const member = findMember(item.memberId);
       const account = findAccount(item.accountId);
       const currency = findCurrency(item.currencyId) || findCurrency(account?.currencyId) || getBaseCurrency();
-      return `
-        <tr>
-          <td>${item.date}</td>
-          <td>${member?.name ?? "Невідомо"}</td>
-          <td>${account?.name ?? "Невідомо"}</td>
-          <td>${item.category}</td>
-          <td>${item.subcategory || "—"}</td>
-          <td>${item.description || "—"}</td>
-          <td>${formatMoney(item.amount, currency.code)}</td>
-          <td data-entity="expense" data-id="${item.id}" class="table-actions">
-            <button data-action="edit">Редагувати</button>
-            <button data-action="delete" class="danger">Видалити</button>
-          </td>
-        </tr>
-      `;
+		return `
+		  <tr>
+			<td data-label="Дата">${item.date}</td>
+			<td data-label="Член">${member?.name ?? "Невідомо"}</td>
+			<td data-label="Рахунок">${account?.name ?? "Невідомо"}</td>
+			<td data-label="Категорія">${item.category}</td>
+			<td data-label="Підкатегорія">${item.subcategory || "—"}</td>
+			<td data-label="Опис">${item.description || "—"}</td>
+			<td data-label="Сума">${formatMoney(item.amount, currency.code)}</td>
+			<td data-label="Дії" data-entity="expense" data-id="${item.id}" class="table-actions">
+			  <button data-action="edit">Редагувати</button>
+			  <button data-action="delete" class="danger">Видалити</button>
+			</td>
+		  </tr>
+		`;
     })
     .join("");
 }
@@ -1451,6 +1451,10 @@ renderAll();
     };
     reader.readAsText(file);
   });
+  document.getElementById("import-data-btn").addEventListener("click", () => {
+  document.getElementById("import-data-input").click();
+});
+
 }
 
 
@@ -1652,7 +1656,30 @@ document.getElementById("generate-report-chart").addEventListener("click", () =>
   const formatKey = (date) => {
     const d = new Date(date);
     if (grouping === "day") return d.toISOString().split("T")[0];
-    if (grouping === "week") return `${d.getFullYear()}-W${Math.ceil(d.getDate() / 7)}`;
+    // if (grouping === "week") return `${d.getFullYear()}-W${Math.ceil(d.getDate() / 7)}`;
+
+	if (grouping === "week") {
+	  const date = new Date(d);
+	  date.setHours(0, 0, 0, 0);
+
+	  // ISO week: Monday = 1, Sunday = 7
+	  const day = (date.getDay() + 6) % 7;
+	  date.setDate(date.getDate() - day + 3);
+
+	  const firstThursday = new Date(date.getFullYear(), 0, 4);
+	  const weekNumber =
+		1 +
+		Math.round(
+		  ((date - firstThursday) / 86400000 -
+			((firstThursday.getDay() + 6) % 7) +
+			3) /
+			7
+		);
+
+	  return `${date.getFullYear()}-W${String(weekNumber).padStart(2, "0")}`;
+	}
+
+
     if (grouping === "month") return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
     if (grouping === "year") return `${d.getFullYear()}`;
   };

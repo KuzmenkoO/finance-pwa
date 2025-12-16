@@ -26,12 +26,12 @@
      Очистити дані
     </button>
     <button class="ghost" id="export-data-btn">
-     Експорт JSON
+     Експорт
     </button>
-    <label class="import-label">
-     Імпорт JSON
-     <input accept="application/json" id="import-data-input" type="file">
-    </label>
+	<input accept="application/json" id="import-data-input" type="file" style="display: none;">
+	<button class="ghost" id="import-data-btn">
+	Імпорт
+	</button>
    </div>
   </header>
   <nav class="app-nav">
@@ -208,6 +208,8 @@
       <h2>
        Витрати
       </h2>
+	  </div>
+	  <div class="expense-controls-scroll">
       <div class="filters">
        <label>
         Член
@@ -254,7 +256,6 @@
         </select>
        </label>
       </div>
-     </div>
      <form class="form-grid" id="expense-form">
       <input id="expense-id" name="expense-id" type="hidden">
       <label>
@@ -299,6 +300,7 @@
        Скасувати
       </button>
      </form>
+	 </div>
      <datalist id="expense-category-options">
      </datalist>
      <datalist id="expense-subcategory-options">
@@ -750,7 +752,7 @@
   <script src="app.js">
   </script>
  
-<script>document.addEventListener('DOMContentLoaded', () => { loadDB(); });</script>
+<!-- <script>document.addEventListener('DOMContentLoaded', () => { loadDB(); });</script> -->
 	<script>
 	  if ("serviceWorker" in navigator) {
 		navigator.serviceWorker.register("service-worker.js")

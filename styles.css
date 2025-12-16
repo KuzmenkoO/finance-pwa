@@ -253,23 +253,6 @@ tbody tr:hover {
   border: 1px solid var(--border);
 }
 
-@media (max-width: 768px) {
-  .app-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filters label {
-    width: 100%;
-  }
-}
-
 /* Вирівнювання кнопок дій по правому краю таблиці */
 .table-actions {
   justify-content: flex-end;
@@ -437,10 +420,84 @@ section.view {
   width: 100%;
 }
 
+/* Desktop: Витрати — фільтри/сортування вирівняти праворуч */
+#expenses .filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;   /* ключове: притискає вправо */
+  gap: 0.75rem 1rem;
+}
+
+/* Щоб кожен фільтр виглядав як компактний рядок */
+#expenses .filters label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+/* Підрівняємо ширину полів, щоб не "розповзались" */
+#expenses .filters select,
+#expenses .filters input {
+  width: 100px;               /* можна 200–260 залежно від твоєї верстки */
+  max-width: 100%;
+}
+
+
+
 
 /* Адаптація для мобільних пристроїв */
-
 @media (max-width: 768px) {
+  /* Заголовок */
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  /* Секція фільтрів */
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .filters label {
+    width: 100%;
+  }
+
+  /* Навігація */
+  .app-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    gap: 0.4rem;
+  }
+
+  .app-nav button {
+    flex: 1 1 auto;
+    min-width: 40%;
+    text-align: center;
+    width: auto;
+  }
+
+  /* Таблиці */
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    min-width: unset;
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+
+  /* Форми (form-row) */
   .form-row {
     flex-direction: column;
   }
@@ -453,36 +510,220 @@ section.view {
     margin-bottom: 10px;
   }
 
-  .table-wrapper {
-    overflow-x: auto;
+  /* Форми (form-grid) */
+  .form-grid {
+    grid-template-columns: 1fr !important;
   }
 
-  table {
-    width: 100%;
-    min-width: 600px;
-  }
-
-  .app-nav {
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-
-  .button-group {
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  button {
+  .form-grid label {
     width: 100%;
   }
 
-  .form-controls {
+  /* Кнопки */
+  .button-group,
+  .form-controls,
+  .header-actions {
     flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
   }
 
+  button,
+  button.ghost {
+    width: 100%;
+    padding: 0.75rem;
+  }
+  
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .header-actions button {
+    width: 100% !important;
+    padding: 0.65rem 0.5rem;
+    white-space: normal;      /* дозволяємо 2 рядки */
+    line-height: 1.15;
+    text-align: center;
+  }
+  
+  
+  /* Fix: третій елемент у header-actions — це label.import-label, він теж має бути "як кнопка" */
+  .header-actions > * {
+    min-width: 0; /* дозволяє grid-елементам стискатися, прибирає overflow */
+  }
+
+  .header-actions .import-label {
+    width: 100%;
+    min-width: 0;
+    display: flex;            /* замість inline-flex */
+    justify-content: center;
+    align-items: center;
+    white-space: normal;      /* дозволяємо 2 рядки */
+    line-height: 1.15;
+    text-align: center;
+    padding: 0.65rem 0.5rem;  /* як у кнопок */
+  }
+
+  /* Контейнер .card */
+  .card {
+    padding: 1rem !important;
+  }
+
+  /* Секція валюти */
   .currency-section select,
   .currency-section input {
     width: 100%;
     margin-bottom: 10px;
+  }
+
+  /* Заголовок розділів */
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+   
+   
+  /* ===== Mobile: Витрати як "картки" + скрол тільки списку ===== */
+  /* 1) Фіксуємо layout вкладки "Витрати": верх (фільтри+форма) не скролиться */
+  #expenses .card {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;     /* мобільна висота viewport */
+    min-height: 0;
+	overflow: hidden;
+  }
+  
+  /* Важливо: секція "Витрати" не повинна скролитись як сторінка */
+  #expenses.view {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* Заголовок не скролиться */
+  #expenses .section-head {
+  flex: 0 0 auto;
+  z-index: 1;
+  background: var(--card);
+  padding: 0.75rem 0 0.5rem;
+  }
+  
+  #expenses .section-head h2 {
+  line-height: 1.25;
+  white-space: normal;
+}
+   
+  
+  /* Витрати: фільтри у 2 колонки всередині рядка (ліва назва, справа поле) */
+  #expenses .filters label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  #expenses .filters label > input,
+  #expenses .filters label > select {
+    flex: 0 0 62%;
+    max-width: 62%;
+    min-width: 0;
+  }
+  
+  
+
+  /* Окремий спільний скрол для фільтрів+форми */
+  #expenses .expense-controls-scroll {
+    flex: 0 0 50%;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain; /* ключове */
+    padding-right: 4px;
+  }
+  
+  /* Важливо: забороняємо формі робити свій окремий скрол */
+  #expenses #expense-form {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  /* Список карток займає решту простору */
+  #expenses .table-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+	margin-top: 0.75rem;
+  }
+
+  #expenses .table-scroll-container {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain; /* ключове */
+  }
+
+  /* 2) Перетворюємо таблицю "Витрати" на картки */
+  #expenses .table-scroll-container table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;  /* відстань між картками */
+  }
+
+  #expenses .table-scroll-container thead {
+    display: none; /* заголовки колонок ховаємо */
+  }
+
+  #expenses .table-scroll-container tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+  }
+
+  #expenses .table-scroll-container tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border: none;               /* прибираємо табличні бордери */
+    white-space: normal;        /* важливо: дозволяємо перенесення */
+    text-align: left;           /* на мобільному краще читати так */
+  }
+
+  /* Ліва частина (підпис поля) */
+  #expenses .table-scroll-container tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex: 0 0 42%;
+    padding-right: 0.5rem;
+  }
+
+  /* Права частина (значення) */
+  #expenses .table-scroll-container tbody td {
+    flex: 1 1 auto;
+  }
+
+  /* Дії (кнопки) — окремим блоком, без "Дата: ..." */
+  #expenses .table-scroll-container tbody td.table-actions::before {
+    content: "";
+    flex: 0 0 0;
+    padding: 0;
+  }
+
+  #expenses .table-scroll-container tbody td.table-actions {
+    justify-content: flex-end;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  #expenses .table-scroll-container tbody td.table-actions button {
+    width: auto; /* не розтягуємо в рядок, щоб 2 кнопки влазили */
   }
 }
