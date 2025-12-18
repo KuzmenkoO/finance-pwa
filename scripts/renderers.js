@@ -305,8 +305,11 @@ function renderCurrencies() {
         <td data-label="Код">${cur.code}</td>
         <td data-label="Курс до базової">${cur.rateToBase}</td>
         <td data-label="Дії" data-entity="currency" data-id="${cur.id}" class="table-actions">
-          ${cur.id === baseId ? "" : '<button data-action="edit">Редагувати</button>'}
-          ${cur.id === baseId ? "" : '<button data-action="delete" class="danger">Видалити</button>'}
+          ${
+            cur.id === baseId
+              ? '<span class="badge base-currency">Основна</span>'
+              : '<button data-action="edit">Редагувати</button><button data-action="delete" class="danger">Видалити</button>'
+          }
         </td>
       </tr>`
     )

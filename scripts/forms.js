@@ -105,34 +105,30 @@ function attachTableActions(tableId, entity, handlers) {
         return;
       }
       if (loan.direction === "owe") {
-        const toAcc = loan.toAccountId ? findAccount(loan.toAccountId) : null;
-        if (toAcc && toAcc.balance < amount) {
-          alert("На рахунку недостатньо коштів для погашення");
-          return;
+        const sourceAcc = loan.fromAccountId ? findAccount(loan.fromAccountId) : null;
+        if (sourceAcc) {
+          const needed = convertAmountBetweenCurrencies(
+            amount,
+            loan.currencyId || sourceAcc.currencyId,
+            sourceAcc.currencyId
+          );
+          if (sourceAcc.balance < needed) {
+            alert("На рахунку недостатньо коштів для погашення");
+            return;
+          }
+          sourceAcc.balance -= needed;
         }
       }
 
-      if (loan.direction === "owe" && loan.toAccountId) {
-        const toAcc = findAccount(loan.toAccountId);
-        if (toAcc) {
+      if (loan.direction === "lend" && loan.toAccountId) {
+        const targetAcc = findAccount(loan.toAccountId);
+        if (targetAcc) {
           const delta = convertAmountBetweenCurrencies(
             amount,
-            loan.currencyId || toAcc.currencyId,
-            toAcc.currencyId
+            loan.currencyId || targetAcc.currencyId,
+            targetAcc.currencyId
           );
-          toAcc.balance -= delta;
-        }
-      }
-
-      if (loan.direction === "lend" && loan.fromAccountId) {
-        const toAcc = findAccount(loan.fromAccountId);
-        if (toAcc) {
-          const delta = convertAmountBetweenCurrencies(
-            amount,
-            loan.currencyId || toAcc.currencyId,
-            toAcc.currencyId
-          );
-          toAcc.balance += delta;
+          targetAcc.balance += delta;
         }
       }
 

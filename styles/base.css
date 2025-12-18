@@ -180,6 +180,24 @@ tbody tr:hover {
 .table-actions {
   display: flex;
   gap: 0.35rem;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.badge.base-currency {
+  background: rgba(97, 218, 251, 0.2);
+  border: 1px solid var(--accent);
+  color: var(--text);
 }
 
 .form-grid {
@@ -272,8 +290,9 @@ tbody tr:hover {
 table th {
   background-color: rgba(255, 255, 255, 0.05);
   border-right: 1px solid var(--border);
-  text-align: left;
+  text-align: center;
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 table th:last-child,
@@ -282,7 +301,7 @@ table td:last-child {
 }
 
 table td {
-  vertical-align: top;
+  vertical-align: middle;
   border-right: 1px solid var(--border);
 }
 
