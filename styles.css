@@ -421,7 +421,7 @@ section.view {
 }
 
 /* Desktop: Витрати — фільтри/сортування вирівняти праворуч */
-#expenses .filters {
+.filters {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;   /* ключове: притискає вправо */
@@ -429,7 +429,7 @@ section.view {
 }
 
 /* Щоб кожен фільтр виглядав як компактний рядок */
-#expenses .filters label {
+.filters label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -437,8 +437,8 @@ section.view {
 }
 
 /* Підрівняємо ширину полів, щоб не "розповзались" */
-#expenses .filters select,
-#expenses .filters input {
+.filters select,
+.filters input {
   width: 100px;               /* можна 200–260 залежно від твоєї верстки */
   max-width: 100%;
 }
@@ -585,6 +585,10 @@ section.view {
     flex-direction: column;
     align-items: flex-start;
   }
+  
+  main {
+  padding-bottom: 1rem; /* або 0.75rem, якщо хочеш ще щільніше */
+  }
    
    
   /* ===== Mobile: Витрати як "картки" + скрол тільки списку ===== */
@@ -599,22 +603,19 @@ section.view {
   
   /* Важливо: секція "Витрати" не повинна скролитись як сторінка */
   #expenses.view {
-    height: 100dvh;
-    overflow: hidden;
+	height: auto;
+	overflow: visible;
   }
 
   /* Заголовок не скролиться */
-  #expenses .section-head {
-  flex: 0 0 auto;
-  z-index: 1;
-  background: var(--card);
-  padding: 0.75rem 0 0.5rem;
-  }
-  
-  #expenses .section-head h2 {
-  line-height: 1.25;
-  white-space: normal;
-}
+	#expenses .section-head {
+	  position: sticky;
+	  top: 0;
+	  flex: 0 0 auto;
+	  z-index: 20;
+	  background: var(--card);
+	  padding: 0.75rem 0.75rem 0.5rem; /* важливо: додали бокові падінги */
+	}
    
   
   /* Витрати: фільтри у 2 колонки всередині рядка (ліва назва, справа поле) */
@@ -637,11 +638,11 @@ section.view {
 
   /* Окремий спільний скрол для фільтрів+форми */
   #expenses .expense-controls-scroll {
-    flex: 0 0 50%;
+	flex: 0 0 50%;          
+	max-height: 52dvh;       /* верх максимум ~пів екрана */
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-	overscroll-behavior: contain; /* ключове */
     padding-right: 4px;
   }
   
@@ -663,7 +664,6 @@ section.view {
     height: 100%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-	overscroll-behavior: contain; /* ключове */
   }
 
   /* 2) Перетворюємо таблицю "Витрати" на картки */
@@ -725,5 +725,415 @@ section.view {
 
   #expenses .table-scroll-container tbody td.table-actions button {
     width: auto; /* не розтягуємо в рядок, щоб 2 кнопки влазили */
+  }
+
+  /* ===== Mobile: Income — оформлення аналогічне вкладці "Витрати" ===== */
+  /* Верхня частина (заголовок + фільтри + форма) фіксується / має власний скрол */
+  #income .card {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Забезпечуємо, що вкладка не дає зайвого скролу сторінці */
+  #income.view {
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Заголовок фіксується зверху, щоб фільтри були завжди доступні */
+  #income .section-head {
+    position: sticky;
+    top: 0;
+    flex: 0 0 auto;
+    z-index: 20;
+    background: var(--card);
+    padding: 0.75rem 0.75rem 0.5rem;
+  }
+
+  /* Робимо фільтри компактними у два стовпці (label + поле) */
+  #income .filters label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  #income .filters label > input,
+  #income .filters label > select {
+    flex: 0 0 62%;
+    max-width: 62%;
+    min-width: 0;
+  }
+
+  /* Верхній блок (фільтри + форма) отримує власний скрол і займає приблизно половину екрану */
+  #income .income-controls-scroll {
+    flex: 0 0 50%;
+    max-height: 52dvh;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+
+  /* Забороняємо формі створювати додатковий скрол всередині полів */
+  #income #income-form {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  /* Список записів займає решту простору і має окремий скрол */
+  #income .table-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    margin-top: 0.75rem;
+  }
+
+  #income .table-scroll-container {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Перетворюємо таблицю доходів на картки, як у витратах */
+  #income .table-scroll-container table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+  }
+
+  #income .table-scroll-container thead {
+    display: none;
+  }
+
+  #income .table-scroll-container tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+  }
+
+  #income .table-scroll-container tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border: none;
+    white-space: normal;
+    text-align: left;
+  }
+
+  #income .table-scroll-container tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex: 0 0 42%;
+    padding-right: 0.5rem;
+  }
+
+  #income .table-scroll-container tbody td {
+    flex: 1 1 auto;
+  }
+
+  #income .table-scroll-container tbody td.table-actions::before {
+    content: "";
+    flex: 0 0 0;
+    padding: 0;
+  }
+
+  #income .table-scroll-container tbody td.table-actions {
+    justify-content: flex-end;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  #income .table-scroll-container tbody td.table-actions button {
+    width: auto;
+  }
+  
+  /* Accounts: mobile layout similar to Expenses (top controls fixed, table->cards, vertical scroll) */
+
+  #accounts .card {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+
+  #accounts .section-head {
+    position: sticky;
+    top: 0;
+    flex: 0 0 auto;
+    z-index: 20;
+    background: var(--card);
+    padding: 0.75rem 0.75rem 0.5rem;
+  }
+
+  #accounts .account-controls-scroll {
+    flex: 0 1 auto;
+    max-height: 32dvh; /* reduce to avoid large empty space */
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+
+  #accounts #account-form {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  #accounts .table-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Make the lower area a column flex so the transfer card can be pushed to the bottom
+     while the table itself becomes the scrollable area inside it. Use an inner wrapper
+     (.accounts-list) to keep the native table layout and width. */
+
+  #accounts .accounts-list table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+    table-layout: auto;
+  }
+
+
+  #accounts .table-scroll-container thead {
+    display: none;
+  }
+
+  #accounts .table-scroll-container tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+  }
+
+
+  /* Ensure long text wraps inside cells */
+  #accounts .accounts-list td {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  /* Right-align values and keep labels on the left */
+  #accounts .table-scroll-container tbody td{
+    display:flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border:none;
+    white-space: normal;
+    align-items: flex-start;
+    text-align: right; /* значення справа */
+  }
+
+  #accounts .table-scroll-container tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex: 0 0 42%;
+    padding-right: 0.5rem;
+	text-align: left; /* label зліва */
+  }
+
+  #accounts .table-scroll-container tbody td.table-actions::before {
+    content: "";
+    flex: 0 0 0;
+    padding: 0;
+  }
+
+  #accounts .table-scroll-container tbody td.table-actions {
+    justify-content: flex-end;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  #accounts .table-scroll-container tbody td.table-actions button {
+    width: auto;
+  }
+  
+  #accounts .table-scroll-container {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #accounts .accounts-list {
+	min-height: 0;
+  }
+  
+    /* Transfer card is a normal flow block at the end of the lower scroll */
+  #accounts .table-scroll-container > .transfer-card {
+	margin-top: 0.75rem;
+  }
+
+  /* Apply same mobile layout behavior to loans, currencies, members */
+  #loans .card,
+  #currencies .card,
+  #members .card {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #loans.view,
+  #currencies.view,
+  #members.view {
+    height: auto;
+    overflow: visible;
+  }
+
+  #loans .section-head,
+  #currencies .section-head,
+  #members .section-head {
+    position: sticky;
+    top: 0;
+    flex: 0 0 auto;
+    z-index: 20;
+    background: var(--card);
+    padding: 0.75rem 0.75rem 0.5rem;
+  }
+
+  #loans .filters label,
+  #currencies .filters label,
+  #members .filters label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  #loans .filters label > input,
+  #loans .filters label > select,
+  #currencies .filters label > input,
+  #currencies .filters label > select,
+  #members .filters label > input,
+  #members .filters label > select {
+    flex: 0 0 62%;
+    max-width: 62%;
+    min-width: 0;
+  }
+
+  #loans .loan-controls-scroll,
+  #currencies .currency-controls-scroll,
+  #members .member-controls-scroll {
+    flex: 0 0 40%;
+    max-height: 52dvh;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+
+  #loans #loan-form,
+  #currencies #currency-form,
+  #members #member-form {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  #loans .table-wrapper,
+  #currencies .table-wrapper,
+  #members .table-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    margin-top: 0.75rem;
+  }
+
+  #loans .table-scroll-container,
+  #currencies .table-scroll-container,
+  #members .table-scroll-container {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #loans .table-scroll-container table,
+  #currencies .table-scroll-container table,
+  #members .table-scroll-container table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+  }
+
+  #loans .table-scroll-container thead,
+  #currencies .table-scroll-container thead,
+  #members .table-scroll-container thead {
+    display: none;
+  }
+
+  #loans .table-scroll-container tbody tr,
+  #currencies .table-scroll-container tbody tr,
+  #members .table-scroll-container tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+  }
+
+  #loans .table-scroll-container tbody td,
+  #currencies .table-scroll-container tbody td,
+  #members .table-scroll-container tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border: none;
+    white-space: normal;
+    text-align: left;
+  }
+
+  #loans .table-scroll-container tbody td::before,
+  #currencies .table-scroll-container tbody td::before,
+  #members .table-scroll-container tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex: 0 0 42%;
+    padding-right: 0.5rem;
+  }
+
+  #loans .table-scroll-container tbody td.table-actions::before,
+  #currencies .table-scroll-container tbody td.table-actions::before,
+  #members .table-scroll-container tbody td.table-actions::before {
+    content: "";
+    flex: 0 0 0;
+    padding: 0;
+  }
+
+  #loans .table-scroll-container tbody td.table-actions,
+  #currencies .table-scroll-container tbody td.table-actions,
+  #members .table-scroll-container tbody td.table-actions {
+    justify-content: flex-end;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  #loans .table-scroll-container tbody td.table-actions button,
+  #currencies .table-scroll-container tbody td.table-actions button,
+  #members .table-scroll-container tbody td.table-actions button {
+    width: auto;
   }
 }

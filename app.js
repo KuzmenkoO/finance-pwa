@@ -462,9 +462,9 @@ function renderMembers() {
     .map(
       (member) => `
       <tr>
-        <td>${member.name}</td>
-        <td>${member.role || "—"}</td>
-        <td data-entity="member" data-id="${member.id}" class="table-actions">
+        <td data-label="Ім'я">${member.name}</td>
+        <td data-label="Роль">${member.role || "—"}</td>
+        <td data-label="Дії" data-entity="member" data-id="${member.id}" class="table-actions">
           <button data-action="edit">Редагувати</button>
           <button data-action="delete" class="danger">Видалити</button>
         </td>
@@ -481,12 +481,12 @@ function renderAccounts() {
       const currency = findCurrency(account.currencyId) || getBaseCurrency();
       return `
       <tr>
-        <td>${account.name}</td>
-        <td>${owner?.name ?? "Невідомо"}</td>
-        <td>${currency.code}</td>
-        <td>${formatMoney(account.balance, currency.code)}</td>
-        <td>${account.note || "—"}</td>
-        <td data-entity="account" data-id="${account.id}" class="table-actions">
+        <td data-label="Назва">${account.name}</td>
+        <td data-label="Власник">${owner?.name ?? "Невідомо"}</td>
+        <td data-label="Валюта">${currency.code}</td>
+        <td data-label="Баланс">${formatMoney(account.balance, currency.code)}</td>
+        <td data-label="Замітки">${account.note || "—"}</td>
+        <td data-label="Дії" data-entity="account" data-id="${account.id}" class="table-actions">
           <button data-action="edit">Редагувати</button>
           <button data-action="delete" class="danger">Видалити</button>
         </td>
@@ -532,21 +532,21 @@ function renderExpenses() {
       const member = findMember(item.memberId);
       const account = findAccount(item.accountId);
       const currency = findCurrency(item.currencyId) || findCurrency(account?.currencyId) || getBaseCurrency();
-		return `
-		  <tr>
-			<td data-label="Дата">${item.date}</td>
-			<td data-label="Член">${member?.name ?? "Невідомо"}</td>
-			<td data-label="Рахунок">${account?.name ?? "Невідомо"}</td>
-			<td data-label="Категорія">${item.category}</td>
-			<td data-label="Підкатегорія">${item.subcategory || "—"}</td>
-			<td data-label="Опис">${item.description || "—"}</td>
-			<td data-label="Сума">${formatMoney(item.amount, currency.code)}</td>
-			<td data-label="Дії" data-entity="expense" data-id="${item.id}" class="table-actions">
-			  <button data-action="edit">Редагувати</button>
-			  <button data-action="delete" class="danger">Видалити</button>
-			</td>
-		  </tr>
-		`;
+    	return `
+    	  <tr>
+    		<td data-label="Дата">${item.date}</td>
+    		<td data-label="Член">${member?.name ?? "Невідомо"}</td>
+    		<td data-label="Рахунок">${account?.name ?? "Невідомо"}</td>
+    		<td data-label="Категорія">${item.category}</td>
+    		<td data-label="Підкатегорія">${item.subcategory || "—"}</td>
+    		<td data-label="Опис">${item.description || "—"}</td>
+    		<td data-label="Сума">${formatMoney(item.amount, currency.code)}</td>
+    		<td data-label="Дії" data-entity="expense" data-id="${item.id}" class="table-actions">
+    		  <button data-action="edit">Редагувати</button>
+    		  <button data-action="delete" class="danger">Видалити</button>
+    		</td>
+    	  </tr>
+    	`;
     })
     .join("");
 }
@@ -589,14 +589,14 @@ function renderIncome() {
       const currency = findCurrency(item.currencyId) || findCurrency(account?.currencyId) || getBaseCurrency();
       return `
         <tr>
-          <td>${item.date}</td>
-          <td>${item.source}</td>
-          <td>${member?.name ?? "Невідомо"}</td>
-          <td>${account?.name ?? "Невідомо"}</td>
-          <td>${item.description || "—"}</td>
-          <td>${currency.code}</td>
-          <td>${formatMoney(item.amount, currency.code)}</td>
-          <td data-entity="income" data-id="${item.id}" class="table-actions">
+          <td data-label="Дата">${item.date}</td>
+          <td data-label="Джерело">${item.source}</td>
+          <td data-label="Член">${member?.name ?? "Невідомо"}</td>
+          <td data-label="Рахунок">${account?.name ?? "Невідомо"}</td>
+          <td data-label="Опис">${item.description || "—"}</td>
+          <td data-label="Валюта">${currency.code}</td>
+          <td data-label="Сума">${formatMoney(item.amount, currency.code)}</td>
+          <td data-label="Дії" data-entity="income" data-id="${item.id}" class="table-actions">
             <button data-action="edit">Редагувати</button>
             <button data-action="delete" class="danger">Видалити</button>
           </td>
@@ -648,16 +648,16 @@ function renderLoans() {
           : "—";
       return `
       <tr>
-        <td>${loan.date}</td>
-        <td>${member?.name ?? "Невідомо"}</td>
-        <td>${counterpartyName || "—"}</td>
-        <td>${fromAccount?.name || "—"}</td>
-        <td>${toAccount?.name || "—"}</td>
-        <td>${formatMoney(loan.amount, currency.code)}</td>
-        <td>${directionLabel}</td>
-        <td>${loan.status === "active" ? "Активна" : loan.status === "paid" ? "Повернена" : "Надана"}</td>
-        <td>${loan.note || "—"}</td>
-        <td data-entity="loan" data-id="${loan.id}" class="table-actions">
+        <td data-label="Дата">${loan.date}</td>
+        <td data-label="Член">${member?.name ?? "Невідомо"}</td>
+        <td data-label="Інша сторона">${counterpartyName || "—"}</td>
+        <td data-label="З рахунку">${fromAccount?.name || "—"}</td>
+        <td data-label="На рахунок">${toAccount?.name || "—"}</td>
+        <td data-label="Сума">${formatMoney(loan.amount, currency.code)}</td>
+        <td data-label="Тип">${directionLabel}</td>
+        <td data-label="Статус">${loan.status === "active" ? "Активна" : loan.status === "paid" ? "Повернена" : "Надана"}</td>
+        <td data-label="Нотатка">${loan.note || "—"}</td>
+        <td data-label="Дії" data-entity="loan" data-id="${loan.id}" class="table-actions">
           <button data-action="edit">Редагувати</button>
           <button data-action="repay">Погашено</button>
           <button data-action="delete" class="danger">Видалити</button>
@@ -1636,6 +1636,63 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+// Move transfer block into accounts scroll on mobile, restore on desktop
+function adjustAccountsTransferPlacement() {
+  const accounts = document.getElementById("accounts");
+  if (!accounts) return;
+  const transferForm = document.getElementById("transfer-form");
+  if (!transferForm) return;
+  const transferCard = transferForm.closest(".card");
+  const tableScroll = accounts.querySelector(".table-scroll-container");
+  const firstCard = accounts.querySelector(".card");
+  const mobile = window.innerWidth <= 768;
+  if (mobile) {
+    if (tableScroll && transferCard && transferCard.parentNode !== tableScroll) {
+      tableScroll.appendChild(transferCard);
+    }
+  } else {
+    if (firstCard && transferCard && transferCard.parentNode !== accounts) {
+      firstCard.parentNode.insertBefore(transferCard, firstCard.nextSibling);
+    }
+  }
+  // adjust heights so scroll is contained within the table-scroll-container on mobile
+  adjustAccountsHeights();
+}
+
+function adjustAccountsHeights() {
+  const accounts = document.getElementById("accounts");
+  if (!accounts) return;
+  const card = accounts.querySelector(".card");
+  const tableScroll = accounts.querySelector(".table-scroll-container");
+  const controls = accounts.querySelector(".account-controls-scroll");
+  if (!card || !tableScroll) return;
+
+  const mobile = window.innerWidth <= 768;
+  if (!mobile) {
+    tableScroll.style.maxHeight = "";
+    return;
+  }
+
+  const cardTop = card.getBoundingClientRect().top;
+  const headerH = card.querySelector("h2")?.getBoundingClientRect().height || 0;
+  const controlsH = controls ? controls.getBoundingClientRect().height : 0;
+  // small padding for spacing
+  const padding = 24;
+  const available = Math.max(120, window.innerHeight - cardTop - headerH - controlsH - padding);
+  tableScroll.style.maxHeight = available + "px";
+}
+
+// debounce helper
+function debounce(fn, wait = 150) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
+
+window.addEventListener("resize", debounce(adjustAccountsTransferPlacement, 120));
+document.addEventListener("DOMContentLoaded", () => setTimeout(adjustAccountsTransferPlacement, 50));
 
 document.getElementById("generate-report-chart").addEventListener("click", () => {
   const fromDate = document.getElementById("report-from-date").value;

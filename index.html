@@ -61,9 +61,12 @@
    <!-- Члени сімʼї -->
    <section class="view hidden" id="members">
     <div class="card">
-     <h2>
-      Члени сімʼї
-     </h2>
+     <div class="section-head">
+      <h2>
+       Члени сімʼї
+      </h2>
+     </div>
+     <div class="member-controls-scroll">
      <form class="form-grid" id="member-form">
       <input id="member-id" name="member-id" type="hidden">
       <label>
@@ -81,8 +84,9 @@
        Скасувати
       </button>
      </form>
+     </div>
      <div class="table-scroll-container">
-	 <div class="table-wrapper">
+   	 <div class="table-wrapper">
       <table>
        <thead>
         <tr>
@@ -107,10 +111,13 @@
    <!-- Рахунки -->
    <section class="view" id="accounts">
     <div class="card">
+	<div class="section-head">
      <h2>
       Рахунки та залишки
      </h2>
-     <form class="form-grid" id="account-form">
+	</div>
+    <div class="account-controls-scroll">
+    <form class="form-grid" id="account-form">
       <input id="account-id" name="account-id" type="hidden">
       <label>
        Назва рахунку
@@ -140,11 +147,13 @@
       <button class="ghost" id="account-cancel-btn" type="button">
        Скасувати
       </button>
-     </form>
-     <div class="table-wrapper">
+    </form>
+    </div>
+    <div class="table-wrapper">
       <div class="table-scroll-container">
-       <table>
-        <thead>
+       <div class="accounts-list">
+        <table>
+         <thead>
          <tr>
           <th>
            Назва
@@ -168,38 +177,33 @@
         </thead>
         <tbody id="accounts-table">
         </tbody>
-       </table>
+        </table>
+       </div>
       </div>
+	  <div class="card transfer-card">
+        <h2>Переказ між рахунками</h2>
+        <form class="form-grid" id="transfer-form">
+        <label>
+         З рахунку
+         <select id="transfer-from-account" name="transfer-from-account" required></select>
+        </label>
+        <label>
+         На рахунок
+         <select id="transfer-to-account" name="transfer-to-account" required></select>
+        </label>
+        <label>
+         Коефіцієнт (курс)
+         <input id="transfer-rate" min="0.0001" name="transfer-rate" required step="0.0001" type="number" value="1">
+        </label>
+        <label>
+         Сума
+         <input id="transfer-amount" name="transfer-amount" required step="0.01" type="number">
+        </label>
+        <button type="submit">Переказати</button>
+        </form>
+      </div>
+	  </div>
      </div>
-    </div>
-    <div class="card" style="margin-top: 1rem">
-     <h2>
-      Переказ між рахунками
-     </h2>
-     <form class="form-grid" id="transfer-form">
-      <label>
-       З рахунку
-       <select id="transfer-from-account" name="transfer-from-account" required>
-       </select>
-      </label>
-      <label>
-       На рахунок
-       <select id="transfer-to-account" name="transfer-to-account" required>
-       </select>
-      </label>
-      <label>
-       Коефіцієнт (курс)
-       <input id="transfer-rate" min="0.0001" name="transfer-rate" required step="0.0001" type="number" value="1">
-      </label>
-      <label>
-       Сума
-       <input id="transfer-amount" name="transfer-amount" required step="0.01" type="number">
-      </label>
-      <button type="submit">
-       Переказати
-      </button>
-     </form>
-    </div>
    </section>
    <!-- Витрати -->
    <section class="view hidden" id="expenses">
@@ -212,7 +216,7 @@
 	  <div class="expense-controls-scroll">
       <div class="filters">
        <label>
-        Член
+        Ініціатор
         <select id="expense-member-filter">
         </select>
        </label>
@@ -263,7 +267,7 @@
        <input id="expense-date" name="expense-date" required type="date">
       </label>
       <label>
-       Член сімʼї
+       Ініціатор
        <select id="expense-member" name="expense-member" required>
        </select>
       </label>
@@ -314,7 +318,7 @@
            Дата
           </th>
           <th>
-           Член
+           Ініціатор
           </th>
           <th>
            Рахунок
@@ -350,9 +354,11 @@
       <h2>
        Доходи
       </h2>
+     </div>
+     <div class="income-controls-scroll">
       <div class="filters">
        <label>
-        Член
+        Ініціатор
         <select id="income-member-filter">
         </select>
        </label>
@@ -365,14 +371,14 @@
         Джерело
         <input id="income-source-filter" list="income-source-filter-options" placeholder="Введіть текст">
        </label>
-		<label>
-		  З дати
-		  <input type="date" id="income-from-date">
-		</label>
-		<label>
-		  По дату
-		  <input type="date" id="income-to-date">
-		</label>
+ 		<label>
+ 		  З дати
+ 		  <input type="date" id="income-from-date">
+ 		</label>
+ 		<label>
+ 		  По дату
+ 		  <input type="date" id="income-to-date">
+ 		</label>
        <label>
         Сортування
         <select id="income-sort">
@@ -391,8 +397,8 @@
         </select>
        </label>
       </div>
-	  <datalist id="income-source-filter-options"></datalist>
-     </div>
+ 	  <datalist id="income-source-filter-options"></datalist>
+     
      <form class="form-grid" id="income-form">
       <input id="income-id" name="income-id" type="hidden">
       <label>
@@ -400,7 +406,7 @@
        <input id="income-date" name="income-date" required type="date">
       </label>
       <label>
-       Член сімʼї
+       Ініціатор
        <select id="income-member" name="income-member" required>
        </select>
       </label>
@@ -435,6 +441,7 @@
      </form>
 	 <datalist id="income-source-options">
 	 </datalist>
+     </div>
      <div class="table-wrapper">
       <div class="table-scroll-container">
        <table>
@@ -447,7 +454,7 @@
            Джерело
           </th>
           <th>
-           Член
+           Ініціатор
           </th>
           <th>
            Рахунок
@@ -476,31 +483,33 @@
    <!-- Позики -->
    <section class="view hidden" id="loans">
     <div class="card">
-	<div class="tab-header-row">
-     <h2>
-      Позики
-     </h2>
-		<div class="filters" style="margin-bottom: 1rem;">
-		  <label>
-			Статус
-			<select id="loan-status-filter">
-			  <option value="">Всі</option>
-			  <option value="active">Активна</option>
-			  <option value="paid">Повернена</option>
-			  <option value="given">Надана іншому</option>
-			</select>
-		  </label>
-		  <label>
-			Інша сторона
-			<input type="text" id="loan-counterparty-filter" list="loan-counterparty-filter-options" placeholder="Введіть або оберіть">
-		  </label>
-		  <datalist id="loan-counterparty-filter-options"></datalist>
-		</div> 
-	</div>
+     <div class="section-head">
+      <h2>
+       Позики
+      </h2>
+     </div>
+     <div class="loan-controls-scroll">
+      <div class="filters" style="margin-bottom: 1rem;">
+       <label>
+        Статус
+        <select id="loan-status-filter">
+          <option value="">Всі</option>
+          <option value="active">Активна</option>
+          <option value="paid">Повернена</option>
+          <option value="given">Надана іншому</option>
+        </select>
+       </label>
+       <label>
+        Інша сторона
+        <input type="text" id="loan-counterparty-filter" list="loan-counterparty-filter-options" placeholder="Введіть або оберіть">
+       </label>
+       <datalist id="loan-counterparty-filter-options"></datalist>
+      </div>
+     
      <form class="form-grid" id="loan-form">
       <input id="loan-id" name="loan-id" type="hidden">
       <label>
-       Член сімʼї
+       Ініціатор
        <select id="loan-member" name="loan-member" required>
        </select>
       </label>
@@ -567,8 +576,9 @@
        Скасувати
       </button>
      </form>
-	 <datalist id="loan-counterparty-options">
-	 </datalist>
+ 	 <datalist id="loan-counterparty-options">
+ 	 </datalist>
+     </div>
      <div class="table-wrapper">
       <div class="table-scroll-container">
        <table>
@@ -578,7 +588,7 @@
            Дата
           </th>
           <th>
-           Член сімʼї
+           Ініціатор
           </th>
           <th>
            Інша сторона
@@ -688,9 +698,12 @@
    <!-- Валюти -->
    <section class="view hidden" id="currencies">
     <div class="card">
-     <h2>
-      Валюти
-     </h2>
+     <div class="section-head">
+      <h2>
+       Валюти
+      </h2>
+     </div>
+     <div class="currency-controls-scroll">
      <form class="form-grid" id="currency-form">
       <input id="currency-id" name="currency-id" type="hidden">
       <label>
@@ -712,6 +725,7 @@
        Скасувати
       </button>
      </form>
+      </div>
      <div class="section-head" style="margin-top: 1.5rem">
       <h3>
        Основна валюта
