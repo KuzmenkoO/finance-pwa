@@ -1,472 +1,10 @@
-:root {
-  color-scheme: light dark;
-  --bg: #0b0b0c;
-  --card: #14161b;
-  --text: #f5f8ff;
-  --muted: #9aa3ba;
-  --accent: #61dafb;
-  --danger: #ff6b6b;
-  --success: #6edc82;
-  --border: #1f2530;
-  --table-row: rgba(255, 255, 255, 0.02);
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: radial-gradient(circle at top left, #1c1f29, #06070a 70%);
-  color: var(--text);
-  min-height: 100vh;
-}
-
-h1,
-h2,
-h3 {
-  margin: 0;
-  font-weight: 600;
-}
-
-p {
-  margin: 0.25rem 0 0;
-  color: var(--muted);
-}
-
-button,
-input,
-select,
-label {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 0.9rem;
-  background: var(--accent);
-  color: #031222;
-  font-weight: 600;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(97, 218, 251, 0.25);
-}
-
-button.ghost {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
-}
-
-button.danger {
-  background: transparent;
-  border: 1px solid var(--danger);
-  color: var(--danger);
-}
-
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.75rem clamp(1rem, 4vw, 3rem);
-}
-
-.header-actions {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.import-label {
-  border: 1px dashed var(--border);
-  padding: 0.5rem 0.9rem;
-  border-radius: 8px;
-  cursor: pointer;
-  display: inline-flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.import-label input {
-  display: none;
-}
-
-.app-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0 2rem 1rem;
-}
-
-.app-nav button {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid transparent;
-}
-
-.app-nav button.active {
-  border-color: var(--accent);
-  color: var(--text);
-  box-shadow: inset 0 0 20px rgba(97, 218, 251, 0.2);
-}
-
-main {
-  padding: 0 clamp(1rem, 4vw, 3rem) 3rem;
-  display: grid;
-  gap: 1.5rem;
-}
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: clamp(1rem, 3vw, 2rem);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
-}
-
-.view.hidden {
-  display: none;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1.25rem;
-}
-
-thead {
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-}
-
-th,
-td {
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--border);
-}
-
-tbody tr:nth-child(even) {
-  background: transparent;
-}
-
-tbody tr:hover {
-  background: var(--table-row);
-}
-
-.table-wrapper {
-  overflow-x: auto;
-}
-
-.accounts-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.accounts-scroll {
-  display: grid;
-  gap: 1rem;
-}
-
-.table-actions {
-  display: flex;
-  gap: 0.35rem;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.form-grid label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-.form-grid input,
-.form-grid select {
-  padding: 0.55rem 0.65rem;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: #0b0d11;
-  color: var(--text);
-}
-
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: flex-end;
-}
-
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.report-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.report-card {
-  padding: 1rem;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: linear-gradient(135deg, rgba(97, 218, 251, 0.12), rgba(23, 32, 54, 0.8));
-}
-
-.report-card strong {
-  font-size: 1.5rem;
-  display: block;
-  margin-top: 0.35rem;
-}
-
-.report-details {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
-
-.report-details ul {
-  list-style: none;
-  padding: 0;
-  margin: 0.75rem 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.report-details li {
-  padding: 0.5rem 0.65rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-}
-
-/* Вирівнювання кнопок дій по правому краю таблиці */
-.table-actions {
-  justify-content: flex-end;
-  text-align: right;
-}
-
-
-/* Покращена візуалізація таблиць */
-table th {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-right: 1px solid var(--border);
-  text-align: left;
-  white-space: nowrap;
-}
-
-table th:last-child,
-table td:last-child {
-  border-right: none;
-}
-
-table td {
-  vertical-align: top;
-  border-right: 1px solid var(--border);
-}
-
-tbody tr:hover td {
-  background-color: rgba(255, 255, 255, 0.02);
-}
-
-td:nth-child(6),
-td:nth-child(7),
-td:nth-child(5),
-td:nth-child(4) {
-  text-align: right;
-}
-
-thead th {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  font-weight: 600;
-}
-
-
-/* Обгортка таблиці зі скролом */
-.table-scroll-container {
-  max-height: 400px;
-  overflow-y: auto;
-  display: block;
-}
-
-/* Фіксовані заголовки */
-.table-scroll-container thead th {
-  position: sticky;
-  top: 0;
-  background-color: #111;
-  z-index: 2;
-}
-
-
-/* Фіксація форми + скрол таблиці */
-section.view {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 100vh;
-}
-.section-header {
-  flex-shrink: 0;
-}
-.table-scroll-container {
-  flex: 1;
-  overflow-y: auto;
-  display: block;
-  min-height: 0;
-}
-.tab-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-
-.filters-inline {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.report-settings {
-  margin-top: 2rem;
-}
-
-#report-chart {
-  margin-top: 1.5rem;
-  width: 100%;
-  max-height: 400px;
-}
-
-.report-breakdown {
-  display: flex;
-  gap: 2rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
-
-.report-breakdown div {
-  flex: 1 1 300px;
-}
-
-.report-breakdown ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.report-breakdown li {
-  margin: 0.3rem 0;
-}
-
-.report-breakdown-tables {
-  display: flex;
-  justify-content: center; /* Центрування по горизонталі */
-  gap: 4rem;                /* Відстань між таблицями */
-  margin-top: 2rem;
-  flex-wrap: wrap;
-  text-align: left;
-  max-width: 100%;
-}
-
-.report-breakdown-tables table {
-  border-collapse: collapse;
-  background-color: #1e1e2f;
-  color: #fff;
-  min-width: 260px;
-  max-width: 100%;
-  margin: 0 auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-.report-breakdown-tables th,
-.report-breakdown-tables td {
-  border: 1px solid #333;
-  padding: 0.4rem 1rem;
-  text-align: left;
-}
-
-.report-breakdown-tables th {
-  background-color: #2c2c3e;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-}
-
-.report-breakdown-tables td {
-  background-color: #1e1e2f;
-  font-size: 0.95rem;
-}
-
-
-
-.currency-section {
-  display: flex;
-  flex-direction: column;
-  max-width: 600px;
-  width: 100%;
-}
-
-/* Desktop: Витрати — фільтри/сортування вирівняти праворуч */
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;   /* ключове: притискає вправо */
-  gap: 0.75rem 1rem;
-}
-
-/* Щоб кожен фільтр виглядав як компактний рядок */
-.filters label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  white-space: nowrap;
-}
-
-/* Підрівняємо ширину полів, щоб не "розповзались" */
-.filters select,
-.filters input {
-  width: 100px;               /* можна 200–260 залежно від твоєї верстки */
-  max-width: 100%;
-}
-
-
-
-
-/* Адаптація для мобільних пристроїв */
 @media (max-width: 768px) {
-  /* Заголовок */
   .app-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
 
-  /* Секція фільтрів */
   .filters {
     flex-direction: column;
     align-items: stretch;
@@ -477,7 +15,6 @@ section.view {
     width: 100%;
   }
 
-  /* Навігація */
   .app-nav {
     flex-wrap: wrap;
     justify-content: center;
@@ -492,7 +29,6 @@ section.view {
     width: auto;
   }
 
-  /* Таблиці */
   .table-wrapper {
     overflow-x: auto;
   }
@@ -508,7 +44,6 @@ section.view {
     white-space: nowrap;
   }
 
-  /* Форми (form-row) */
   .form-row {
     flex-direction: column;
   }
@@ -521,7 +56,6 @@ section.view {
     margin-bottom: 10px;
   }
 
-  /* Форми (form-grid) */
   .form-grid {
     grid-template-columns: 1fr !important;
   }
@@ -530,7 +64,6 @@ section.view {
     width: 100%;
   }
 
-  /* Кнопки */
   .button-group,
   .form-controls,
   .header-actions {
@@ -556,80 +89,69 @@ section.view {
   .header-actions button {
     width: 100% !important;
     padding: 0.65rem 0.5rem;
-    white-space: normal;      /* дозволяємо 2 рядки */
+    white-space: normal;
     line-height: 1.15;
     text-align: center;
   }
   
   
-  /* Fix: третій елемент у header-actions — це label.import-label, він теж має бути "як кнопка" */
   .header-actions > * {
-    min-width: 0; /* дозволяє grid-елементам стискатися, прибирає overflow */
+    min-width: 0;
   }
 
   .header-actions .import-label {
     width: 100%;
     min-width: 0;
-    display: flex;            /* замість inline-flex */
+    display: flex;
     justify-content: center;
     align-items: center;
-    white-space: normal;      /* дозволяємо 2 рядки */
+    white-space: normal;
     line-height: 1.15;
     text-align: center;
-    padding: 0.65rem 0.5rem;  /* як у кнопок */
+    padding: 0.65rem 0.5rem;
   }
 
-  /* Контейнер .card */
   .card {
     padding: 1rem !important;
   }
 
-  /* Секція валюти */
   .currency-section select,
   .currency-section input {
     width: 100%;
     margin-bottom: 10px;
   }
 
-  /* Заголовок розділів */
   .section-head {
     flex-direction: column;
     align-items: flex-start;
   }
   
   main {
-  padding-bottom: 1rem; /* або 0.75rem, якщо хочеш ще щільніше */
+    padding-bottom: 1rem;
   }
-   
-   
-  /* ===== Mobile: Витрати як "картки" + скрол тільки списку ===== */
-  /* 1) Фіксуємо layout вкладки "Витрати": верх (фільтри+форма) не скролиться */
+
   #expenses .card {
     display: flex;
     flex-direction: column;
-    height: 100dvh;     /* мобільна висота viewport */
+    height: 100dvh;
     min-height: 0;
 	overflow: hidden;
   }
   
-  /* Важливо: секція "Витрати" не повинна скролитись як сторінка */
   #expenses.view {
 	height: auto;
 	overflow: visible;
   }
 
-  /* Заголовок не скролиться */
 	#expenses .section-head {
 	  position: sticky;
 	  top: 0;
 	  flex: 0 0 auto;
 	  z-index: 20;
 	  background: var(--card);
-	  padding: 0.75rem 0.75rem 0.5rem; /* важливо: додали бокові падінги */
+	  padding: 0.75rem 0.75rem 0.5rem;
 	}
    
-  
-  /* Витрати: фільтри у 2 колонки всередині рядка (ліва назва, справа поле) */
   #expenses .filters label {
     display: flex;
     flex-direction: row;
@@ -645,25 +167,20 @@ section.view {
     min-width: 0;
   }
   
-  
-
-  /* Окремий спільний скрол для фільтрів+форми */
   #expenses .expense-controls-scroll {
 	flex: 0 0 50%;          
-	max-height: 52dvh;       /* верх максимум ~пів екрана */
+	max-height: 52dvh;
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding-right: 4px;
   }
   
-  /* Важливо: забороняємо формі робити свій окремий скрол */
   #expenses #expense-form {
     overflow: visible !important;
     max-height: none !important;
   }
 
-  /* Список карток займає решту простору */
   #expenses .table-wrapper {
     flex: 1 1 auto;
     min-height: 0;
@@ -677,15 +194,14 @@ section.view {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* 2) Перетворюємо таблицю "Витрати" на картки */
   #expenses .table-scroll-container table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 0.75rem;  /* відстань між картками */
+    border-spacing: 0 0.75rem;
   }
 
   #expenses .table-scroll-container thead {
-    display: none; /* заголовки колонок ховаємо */
+    display: none;
   }
 
   #expenses .table-scroll-container tbody tr {
@@ -701,12 +217,11 @@ section.view {
     justify-content: space-between;
     gap: 0.75rem;
     padding: 0.35rem 0;
-    border: none;               /* прибираємо табличні бордери */
-    white-space: normal;        /* важливо: дозволяємо перенесення */
-    text-align: left;           /* на мобільному краще читати так */
+    border: none;
+    white-space: normal;
+    text-align: left;
   }
 
-  /* Ліва частина (підпис поля) */
   #expenses .table-scroll-container tbody td::before {
     content: attr(data-label);
     color: var(--muted);
@@ -715,12 +230,10 @@ section.view {
     padding-right: 0.5rem;
   }
 
-  /* Права частина (значення) */
   #expenses .table-scroll-container tbody td {
     flex: 1 1 auto;
   }
 
-  /* Дії (кнопки) — окремим блоком, без "Дата: ..." */
   #expenses .table-scroll-container tbody td.table-actions::before {
     content: "";
     flex: 0 0 0;
@@ -735,11 +248,9 @@ section.view {
   }
 
   #expenses .table-scroll-container tbody td.table-actions button {
-    width: auto; /* не розтягуємо в рядок, щоб 2 кнопки влазили */
+    width: auto;
   }
 
-  /* ===== Mobile: Income — оформлення аналогічне вкладці "Витрати" ===== */
-  /* Верхня частина (заголовок + фільтри + форма) фіксується / має власний скрол */
   #income .card {
     display: flex;
     flex-direction: column;
@@ -748,13 +259,11 @@ section.view {
     overflow: hidden;
   }
 
-  /* Забезпечуємо, що вкладка не дає зайвого скролу сторінці */
   #income.view {
     height: auto;
     overflow: visible;
   }
 
-  /* Заголовок фіксується зверху, щоб фільтри були завжди доступні */
   #income .section-head {
     position: sticky;
     top: 0;
@@ -764,7 +273,6 @@ section.view {
     padding: 0.75rem 0.75rem 0.5rem;
   }
 
-  /* Робимо фільтри компактними у два стовпці (label + поле) */
   #income .filters label {
     display: flex;
     flex-direction: row;
@@ -780,7 +288,6 @@ section.view {
     min-width: 0;
   }
 
-  /* Верхній блок (фільтри + форма) отримує власний скрол і займає приблизно половину екрану */
   #income .income-controls-scroll {
     flex: 0 0 50%;
     max-height: 52dvh;
@@ -790,13 +297,11 @@ section.view {
     padding-right: 4px;
   }
 
-  /* Забороняємо формі створювати додатковий скрол всередині полів */
   #income #income-form {
     overflow: visible !important;
     max-height: none !important;
   }
 
-  /* Список записів займає решту простору і має окремий скрол */
   #income .table-wrapper {
     flex: 1 1 auto;
     min-height: 0;
@@ -810,7 +315,6 @@ section.view {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Перетворюємо таблицю доходів на картки, як у витратах */
   #income .table-scroll-container table {
     width: 100%;
     border-collapse: separate;
@@ -868,8 +372,6 @@ section.view {
     width: auto;
   }
   
-  /* Accounts: mobile layout similar to Expenses (top controls fixed, table->cards, vertical scroll) */
-
   #accounts.view {
     height: auto;
     overflow: visible;
@@ -958,13 +460,11 @@ section.view {
     padding: 0.75rem;
   }
 
-  /* Ensure long text wraps inside cells */
   #accounts .accounts-list td {
     word-break: break-word;
     overflow-wrap: anywhere;
   }
 
-  /* Right-align values and keep labels on the left */
   #accounts .table-scroll-container tbody td{
     display:flex;
     justify-content: space-between;
@@ -973,7 +473,7 @@ section.view {
     border:none;
     white-space: normal;
     align-items: flex-start;
-    text-align: right; /* значення справа */
+    text-align: right;
   }
 
   #accounts .table-scroll-container tbody td::before {
@@ -982,7 +482,7 @@ section.view {
     font-size: 0.85rem;
     flex: 0 0 42%;
     padding-right: 0.5rem;
-	text-align: left; /* label зліва */
+	text-align: left;
   }
 
   #accounts .table-scroll-container tbody td.table-actions::before {
@@ -1007,7 +507,6 @@ section.view {
     margin: 0;
   }
 
-  /* Apply same mobile layout behavior to loans, currencies, members */
   #loans .card,
   #currencies .card,
   #members .card {
