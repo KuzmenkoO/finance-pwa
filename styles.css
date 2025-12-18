@@ -166,6 +166,17 @@ tbody tr:hover {
   overflow-x: auto;
 }
 
+.accounts-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.accounts-scroll {
+  display: grid;
+  gap: 1rem;
+}
+
 .table-actions {
   display: flex;
   gap: 0.35rem;
@@ -859,14 +870,19 @@ section.view {
   
   /* Accounts: mobile layout similar to Expenses (top controls fixed, table->cards, vertical scroll) */
 
+  #accounts.view {
+    height: auto;
+    overflow: visible;
+  }
+
   #accounts .card {
     display: flex;
     flex-direction: column;
-    height: 100dvh;
+    height: auto;
+    max-height: 100dvh;
     min-height: 0;
     overflow: hidden;
   }
-
 
   #accounts .section-head {
     position: sticky;
@@ -879,7 +895,7 @@ section.view {
 
   #accounts .account-controls-scroll {
     flex: 0 1 auto;
-    max-height: 32dvh; /* reduce to avoid large empty space */
+    max-height: 32dvh;
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -891,16 +907,37 @@ section.view {
     max-height: none !important;
   }
 
-  #accounts .table-wrapper {
+  #accounts .accounts-wrapper {
     flex: 1 1 auto;
     min-height: 0;
     display: flex;
     flex-direction: column;
+    gap: 0.75rem;
   }
 
-  /* Make the lower area a column flex so the transfer card can be pushed to the bottom
-     while the table itself becomes the scrollable area inside it. Use an inner wrapper
-     (.accounts-list) to keep the native table layout and width. */
+  #accounts .accounts-scroll {
+    flex: 0 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+
+  #accounts .table-scroll-container {
+    flex: 1 1 auto;
+    max-height: none;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  #accounts .accounts-list {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
 
   #accounts .accounts-list table {
     width: 100%;
@@ -908,7 +945,6 @@ section.view {
     border-spacing: 0 0.75rem;
     table-layout: auto;
   }
-
 
   #accounts .table-scroll-container thead {
     display: none;
@@ -921,7 +957,6 @@ section.view {
     background: rgba(255, 255, 255, 0.03);
     padding: 0.75rem;
   }
-
 
   /* Ensure long text wraps inside cells */
   #accounts .accounts-list td {
@@ -966,21 +1001,10 @@ section.view {
   #accounts .table-scroll-container tbody td.table-actions button {
     width: auto;
   }
-  
-  #accounts .table-scroll-container {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    min-height: 0;
-    -webkit-overflow-scrolling: touch;
-  }
 
-  #accounts .accounts-list {
-	min-height: 0;
-  }
-  
-    /* Transfer card is a normal flow block at the end of the lower scroll */
-  #accounts .table-scroll-container > .transfer-card {
-	margin-top: 0.75rem;
+  #accounts .transfer-card {
+    flex-shrink: 0;
+    margin: 0;
   }
 
   /* Apply same mobile layout behavior to loans, currencies, members */
