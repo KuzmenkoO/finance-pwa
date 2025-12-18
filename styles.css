@@ -878,7 +878,8 @@ section.view {
   #accounts .card {
     display: flex;
     flex-direction: column;
-    height: 100dvh;
+    height: auto;
+    max-height: 100dvh;
     min-height: 0;
     overflow: hidden;
   }
@@ -915,12 +916,12 @@ section.view {
   }
 
   #accounts .accounts-scroll {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    overflow-y: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
     padding-right: 4px;
   }
