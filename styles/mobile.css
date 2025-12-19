@@ -1,0 +1,663 @@
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .filters label {
+    width: 100%;
+  }
+
+  .app-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    gap: 0.4rem;
+  }
+
+  .app-nav button {
+    flex: 1 1 auto;
+    min-width: 40%;
+    text-align: center;
+    width: auto;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    min-width: unset;
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-row label,
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .form-grid label {
+    width: 100%;
+  }
+
+  .button-group,
+  .form-controls,
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  button,
+  button.ghost {
+    width: 100%;
+    padding: 0.75rem;
+  }
+  
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .header-actions button {
+    width: 100% !important;
+    padding: 0.65rem 0.5rem;
+    white-space: normal;
+    line-height: 1.15;
+    text-align: center;
+  }
+  
+  
+  .header-actions > * {
+    min-width: 0;
+  }
+
+  .header-actions .import-label {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: normal;
+    line-height: 1.15;
+    text-align: center;
+    padding: 0.65rem 0.5rem;
+  }
+
+  .card {
+    padding: 1rem !important;
+  }
+
+  .currency-section select,
+  .currency-section input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  main {
+    padding-bottom: 1rem;
+  }
+
+  #expenses .card {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 0;
+	overflow: hidden;
+  }
+  
+  #expenses.view {
+	height: auto;
+	overflow: visible;
+  }
+
+	#expenses .section-head {
+	  position: sticky;
+	  top: 0;
+	  flex: 0 0 auto;
+	  z-index: 20;
+	  background: var(--card);
+	  padding: 0.75rem 0.75rem 0.5rem;
+	}
+   
+  #expenses .filters label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  #expenses .filters label > input,
+  #expenses .filters label > select {
+    flex: 0 0 62%;
+    max-width: 62%;
+    min-width: 0;
+  }
+  
+  #expenses .expense-controls-scroll {
+	flex: 0 0 50%;          
+	max-height: 52dvh;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+  
+  #expenses #expense-form {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  #expenses .table-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+	margin-top: 0.75rem;
+  }
+
+  #expenses .table-scroll-container {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #expenses .table-scroll-container table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+  }
+
+  #expenses .table-scroll-container thead {
+    display: none;
+  }
+
+  #expenses .table-scroll-container tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+  }
+
+  #expenses .table-scroll-container tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border: none;
+    white-space: normal;
+    text-align: left;
+  }
+
+  #expenses .table-scroll-container tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex: 0 0 42%;
+    padding-right: 0.5rem;
+  }
+
+  #expenses .table-scroll-container tbody td {
+    flex: 1 1 auto;
+  }
+
+  #expenses .table-scroll-container tbody td.table-actions::before {
+    content: "";
+    flex: 0 0 0;
+    padding: 0;
+  }
+
+  #expenses .table-scroll-container tbody td.table-actions {
+    justify-content: flex-end;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  #expenses .table-scroll-container tbody td.table-actions button {
+    width: auto;
+  }
+
+  #income .card {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #income.view {
+    height: auto;
+    overflow: visible;
+  }
+
+  #income .section-head {
+    position: sticky;
+    top: 0;
+    flex: 0 0 auto;
+    z-index: 20;
+    background: var(--card);
+    padding: 0.75rem 0.75rem 0.5rem;
+  }
+
+  #income .filters label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  #income .filters label > input,
+  #income .filters label > select {
+    flex: 0 0 62%;
+    max-width: 62%;
+    min-width: 0;
+  }
+
+  #income .income-controls-scroll {
+    flex: 0 0 50%;
+    max-height: 52dvh;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+
+  #income #income-form {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  #income .table-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    margin-top: 0.75rem;
+  }
+
+  #income .table-scroll-container {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #income .table-scroll-container table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+  }
+
+  #income .table-scroll-container thead {
+    display: none;
+  }
+
+  #income .table-scroll-container tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+  }
+
+  #income .table-scroll-container tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border: none;
+    white-space: normal;
+    text-align: left;
+  }
+
+  #income .table-scroll-container tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex: 0 0 42%;
+    padding-right: 0.5rem;
+  }
+
+  #income .table-scroll-container tbody td {
+    flex: 1 1 auto;
+  }
+
+  #income .table-scroll-container tbody td.table-actions::before {
+    content: "";
+    flex: 0 0 0;
+    padding: 0;
+  }
+
+  #income .table-scroll-container tbody td.table-actions {
+    justify-content: flex-end;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  #income .table-scroll-container tbody td.table-actions button {
+    width: auto;
+  }
+  
+  #accounts.view {
+    height: auto;
+    overflow: visible;
+  }
+
+  #accounts .card {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-height: none;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #accounts .section-head {
+    position: sticky;
+    top: 0;
+    flex: 0 0 auto;
+    z-index: 20;
+    background: var(--card);
+    padding: 0.75rem 0.75rem 0.5rem;
+  }
+
+  #accounts .account-controls-scroll {
+    flex: 0 1 auto;
+    max-height: 32dvh;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+
+  #accounts #account-form {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  #accounts .accounts-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow: hidden;
+  }
+
+  #accounts .accounts-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+
+  #accounts .table-scroll-container {
+    flex: 1 1 auto;
+    max-height: none;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  #accounts .accounts-list {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  #accounts .accounts-list table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+    table-layout: auto;
+  }
+
+  #accounts .table-scroll-container thead {
+    display: none;
+  }
+
+  #accounts .table-scroll-container tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+  }
+
+  #accounts .accounts-list td {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  #accounts .table-scroll-container tbody td{
+    display:flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border:none;
+    white-space: normal;
+    align-items: flex-start;
+    text-align: right;
+  }
+
+  #accounts .table-scroll-container tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex: 0 0 42%;
+    padding-right: 0.5rem;
+	text-align: left;
+  }
+
+  #accounts .table-scroll-container tbody td.table-actions::before {
+    content: "";
+    flex: 0 0 0;
+    padding: 0;
+  }
+
+  #accounts .table-scroll-container tbody td.table-actions {
+    justify-content: flex-end;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  #accounts .table-scroll-container tbody td.table-actions button {
+    width: auto;
+  }
+
+  #accounts .transfer-card {
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  #loans .card,
+  #currencies .card,
+  #members .card {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #loans.view,
+  #currencies.view,
+  #members.view {
+    height: auto;
+    overflow: visible;
+  }
+
+  #loans .section-head,
+  #currencies .section-head,
+  #members .section-head {
+    position: sticky;
+    top: 0;
+    flex: 0 0 auto;
+    z-index: 20;
+    background: var(--card);
+    padding: 0.75rem 0.75rem 0.5rem;
+  }
+
+  #loans .filters label,
+  #currencies .filters label,
+  #members .filters label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  #loans .filters label > input,
+  #loans .filters label > select,
+  #currencies .filters label > input,
+  #currencies .filters label > select,
+  #members .filters label > input,
+  #members .filters label > select {
+    flex: 0 0 62%;
+    max-width: 62%;
+    min-width: 0;
+  }
+
+  #loans .loan-controls-scroll,
+  #currencies .currency-controls-scroll,
+  #members .member-controls-scroll {
+    flex: 0 0 40%;
+    max-height: 52dvh;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+
+  #loans #loan-form,
+  #currencies #currency-form,
+  #members #member-form {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  #loans .table-wrapper,
+  #currencies .table-wrapper,
+  #members .table-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    margin-top: 0.75rem;
+  }
+
+  #loans .table-scroll-container,
+  #currencies .table-scroll-container,
+  #members .table-scroll-container {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #loans .table-scroll-container table,
+  #currencies .table-scroll-container table,
+  #members .table-scroll-container table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+  }
+
+  #loans .table-scroll-container thead,
+  #currencies .table-scroll-container thead,
+  #members .table-scroll-container thead {
+    display: none;
+  }
+
+  #loans .table-scroll-container tbody tr,
+  #currencies .table-scroll-container tbody tr,
+  #members .table-scroll-container tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+  }
+
+  #loans .table-scroll-container tbody td,
+  #currencies .table-scroll-container tbody td,
+  #members .table-scroll-container tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border: none;
+    white-space: normal;
+    text-align: left;
+  }
+
+  #loans .table-scroll-container tbody td::before,
+  #currencies .table-scroll-container tbody td::before,
+  #members .table-scroll-container tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex: 0 0 42%;
+    padding-right: 0.5rem;
+  }
+
+  #loans .table-scroll-container tbody td.table-actions::before,
+  #currencies .table-scroll-container tbody td.table-actions::before,
+  #members .table-scroll-container tbody td.table-actions::before {
+    content: "";
+    flex: 0 0 0;
+    padding: 0;
+  }
+
+  #loans .table-scroll-container tbody td.table-actions,
+  #currencies .table-scroll-container tbody td.table-actions,
+  #members .table-scroll-container tbody td.table-actions {
+    justify-content: flex-end;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+
+  #loans .table-scroll-container tbody td.table-actions button,
+  #currencies .table-scroll-container tbody td.table-actions button,
+  #members .table-scroll-container tbody td.table-actions button {
+    width: auto;
+  }
+}

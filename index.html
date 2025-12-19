@@ -6,7 +6,8 @@
   <title>
    Домашні фінанси
   </title>
-  <link href="styles.css" rel="stylesheet">
+  <link href="styles/base.css" rel="stylesheet">
+  <link href="styles/mobile.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<link rel="manifest" href="manifest.json">
 	<meta name="theme-color" content="#00bcd4">
@@ -149,7 +150,8 @@
       </button>
     </form>
     </div>
-    <div class="table-wrapper">
+    <div class="table-wrapper accounts-wrapper">
+     <div class="accounts-scroll">
       <div class="table-scroll-container">
        <div class="accounts-list">
         <table>
@@ -180,7 +182,7 @@
         </table>
        </div>
       </div>
-	  <div class="card transfer-card">
+      <div class="card transfer-card">
         <h2>Переказ між рахунками</h2>
         <form class="form-grid" id="transfer-form">
         <label>
@@ -202,7 +204,8 @@
         <button type="submit">Переказати</button>
         </form>
       </div>
-	  </div>
+     </div>
+    </div>
      </div>
    </section>
    <!-- Витрати -->
@@ -763,8 +766,12 @@
     </div>
    </section>
   </main>
-  <script src="app.js">
-  </script>
+  <script src="scripts/state.js" defer></script>
+  <script src="scripts/options.js" defer></script>
+  <script src="scripts/renderers.js" defer></script>
+  <script src="scripts/forms.js" defer></script>
+  <script src="scripts/app-init.js" defer></script>
+  <script src="scripts/ui.js" defer></script>
  
 <!-- <script>document.addEventListener('DOMContentLoaded', () => { loadDB(); });</script> -->
 	<script>
