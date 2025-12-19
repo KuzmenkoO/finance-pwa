@@ -25,11 +25,13 @@ function adjustAccountsHeights() {
   const card = accounts.querySelector(".card");
   const tableScroll = accounts.querySelector(".table-scroll-container");
   const controls = accounts.querySelector(".account-controls-scroll");
+  const accountsScroll = accounts.querySelector(".accounts-scroll");
   if (!card || !tableScroll) return;
 
   const mobile = window.innerWidth <= 768;
   if (!mobile) {
     tableScroll.style.maxHeight = "";
+    if (accountsScroll) accountsScroll.style.maxHeight = "";
     return;
   }
 
@@ -39,6 +41,7 @@ function adjustAccountsHeights() {
   const padding = 24;
   const available = Math.max(120, window.innerHeight - cardTop - headerH - controlsH - padding);
   tableScroll.style.maxHeight = available + "px";
+  if (accountsScroll) accountsScroll.style.maxHeight = available + "px";
 }
 
 function debounce(fn, wait = 150) {
