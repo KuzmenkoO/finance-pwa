@@ -183,6 +183,39 @@ tbody tr:hover {
   align-items: center;
 }
 
+.subaccount-row td:first-child {
+  padding-left: 2rem;
+}
+
+.subaccount-row td:first-child::before {
+  content: "-- ";
+  color: var(--muted);
+}
+
+.account-parent-row .account-name-cell {
+  cursor: pointer;
+  position: relative;
+  padding-left: 1.6rem;
+}
+
+.account-parent-row .account-name-cell::before {
+  content: "v";
+  position: absolute;
+  left: 0.4rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.account-parent-row.account-collapsed .account-name-cell::before {
+  content: ">";
+}
+
+.account-children-count {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-left: 0.35rem;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
