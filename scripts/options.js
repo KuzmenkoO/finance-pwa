@@ -59,27 +59,41 @@ function refreshMemberOptions() {
   });
 }
 
+function getTransactionAccounts() {
+  const result = [];
+  const mainAccounts = getMainAccounts();
+  mainAccounts.forEach((account) => {
+    const children = getAccountChildren(account.id);
+    if (children.length) {
+      children.forEach((child) => {
+        result.push({ id: child.id, name: getAccountLabel(child) });
+      });
+    } else {
+      result.push({ id: account.id, name: account.name });
+    }
+  });
+  return result;
+}
+
 function refreshAccountOptions() {
-  const accountSelects = [
+  const transactionAccounts = getTransactionAccounts();
+
+  [
     "expense-account",
     "income-account",
     "loan-from-account",
     "loan-to-account",
     "transfer-from-account",
     "transfer-to-account",
-  ];
-  accountSelects.forEach((id) => {
+  ].forEach((id) => {
     const element = document.getElementById(id);
     if (element) {
-      populateSelect(
-        element,
-        state.accounts.map((acc) => ({ id: acc.id, name: acc.name }))
-      );
+      populateSelect(element, transactionAccounts);
     }
   });
 
-  populateSelect(document.getElementById("expense-account-filter"), state.accounts, { includeAny: true });
-  populateSelect(document.getElementById("income-account-filter"), state.accounts, { includeAny: true });
+  populateSelect(document.getElementById("expense-account-filter"), transactionAccounts, { includeAny: true });
+  populateSelect(document.getElementById("income-account-filter"), transactionAccounts, { includeAny: true });
 }
 
 function setCurrencyFromMemory(selectId, viewId) {

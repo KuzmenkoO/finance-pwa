@@ -57,6 +57,7 @@ const COLLECTION_PREFIX = {
   loans: "loan",
   currencies: "cur",
 };
+const accountExpandedState = {};
 
 const deepClone = (value) => JSON.parse(JSON.stringify(value));
 
@@ -177,6 +178,7 @@ function loadState() {
 
     merged.accounts = (merged.accounts || []).map((acc) => ({
       ...acc,
+      parentId: acc.parentId || null,
       currencyId: acc.currencyId || merged.baseCurrencyId || defaultState.baseCurrencyId,
     }));
 
@@ -239,6 +241,17 @@ function loadState() {
       };
     });
 
+    if (merged.accounts && merged.accounts.length) {
+      const list = merged.accounts;
+      list.forEach((acc) => {
+        if (acc.parentId) return;
+        const children = list.filter((item) => item.parentId === acc.id);
+        if (children.length) {
+          acc.balance = children.reduce((sum, item) => sum + Number(item.balance || 0), 0);
+        }
+      });
+    }
+
     return merged;
   } catch (error) {
     console.error("Cannot load state", error);
@@ -271,6 +284,41 @@ const findMember = (id) => {
 };
 
 const findAccount = (id) => state.accounts.find((acc) => acc.id === id);
+
+const getMainAccounts = () => state.accounts.filter((acc) => !acc.parentId);
+
+const getAccountChildren = (parentId, list = state.accounts) =>
+  list.filter((acc) => acc.parentId === parentId);
+
+const hasSubaccounts = (parentId, list = state.accounts) =>
+  list.some((acc) => acc.parentId === parentId);
+
+const updateParentBalance = (parentId, list = state.accounts) => {
+  const parent = list.find((acc) => acc.id === parentId);
+  if (!parent) return;
+  const total = getAccountChildren(parentId, list).reduce(
+    (sum, acc) => sum + Number(acc.balance || 0),
+    0
+  );
+  parent.balance = total;
+};
+
+const normalizeAccountHierarchy = (list = state.accounts) => {
+  list.forEach((acc) => {
+    if (!acc.parentId && hasSubaccounts(acc.id, list)) {
+      updateParentBalance(acc.id, list);
+    }
+  });
+};
+
+const getAccountLabel = (account) => {
+  if (!account) return "گ?گçگ?‘-گ?گ?گ?گ?";
+  if (account.parentId) {
+    const parent = findAccount(account.parentId);
+    return parent ? `${parent.name} / ${account.name}` : account.name;
+  }
+  return account.name;
+};
 
 const convertAmountBetweenCurrencies = (amount, fromCurrencyId, toCurrencyId) => {
   if (!amount) return 0;

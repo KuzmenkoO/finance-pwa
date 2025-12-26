@@ -96,6 +96,81 @@ function attachTableActions(tableId, entity, handlers) {
 
     if (button.dataset.action === "edit") {
       handlers.edit(id);
+    } else if (button.dataset.action === "add-subaccount") {
+      if (handlers.addSubaccount) {
+        handlers.addSubaccount(id);
+        return;
+      }
+      if (entity === "account") {
+        const parent = findAccount(id);
+        if (!parent) return;
+        const children = getAccountChildren(parent.id);
+        const name = `Підрахунок ${children.length + 1}`;
+        const startingBalance = children.length === 0 ? parent.balance : 0;
+        const subaccount = {
+          id: uid(COLLECTION_PREFIX.accounts ?? "acc"),
+          parentId: parent.id,
+          name,
+          owner: parent.owner,
+          balance: startingBalance,
+          currencyId: parent.currencyId,
+          note: "",
+        };
+        state.accounts = [...state.accounts, subaccount];
+        updateParentBalance(parent.id);
+        
+saveState();
+const activeView = document.querySelector(".app-nav button.active")?.dataset.view;
+if (activeView) {
+  const select = document.querySelector(`#${activeView.slice(0, -1)}-currency`);
+  if (select) rememberCurrency(activeView, select.value);
+}
+renderAll();
+
+      }
+    } else if (button.dataset.action === "delete-subaccount") {
+      if (handlers.deleteSubaccount) {
+        handlers.deleteSubaccount(id);
+        return;
+      }
+      if (entity === "account") {
+        const subaccount = findAccount(id);
+        if (!subaccount || !subaccount.parentId) return;
+        const siblings = getAccountChildren(subaccount.parentId);
+        const isOnlyChild = siblings.length === 1;
+        const originalBalance = Number(subaccount.balance || 0);
+        if (isOnlyChild && originalBalance !== 0) {
+          subaccount.balance = 0;
+          setTimeout(() => {
+            const stillThere = findAccount(id);
+            if (stillThere && stillThere.parentId === subaccount.parentId) {
+              stillThere.balance = originalBalance;
+            }
+          }, 0);
+        }
+        if (Number(subaccount.balance || 0) !== 0) {
+          alert("На підрахунку ще є кошти. Видалення неможливе.");
+          return;
+        }
+        if (!confirm("Видалити підрахунок?")) return;
+        state.accounts = state.accounts.filter((acc) => acc.id !== id);
+        state.expenses = state.expenses.filter((expense) => expense.accountId !== id);
+        state.income = state.income.filter((entry) => entry.accountId !== id);
+        updateParentBalance(subaccount.parentId);
+        if (isOnlyChild && originalBalance !== 0) {
+          const parent = findAccount(subaccount.parentId);
+          if (parent) parent.balance = originalBalance;
+        }
+        
+saveState();
+const activeView = document.querySelector(".app-nav button.active")?.dataset.view;
+if (activeView) {
+  const select = document.querySelector(`#${activeView.slice(0, -1)}-currency`);
+  if (select) rememberCurrency(activeView, select.value);
+}
+renderAll();
+
+      }
     } else if (button.dataset.action === "repay") {
       const loan = state.loans.find((l) => l.id === id);
       if (!loan) return;
@@ -116,7 +191,7 @@ function attachTableActions(tableId, entity, handlers) {
             alert("На рахунку недостатньо коштів для погашення");
             return;
           }
-          sourceAcc.balance -= needed;
+          applyBalanceDelta(loan.fromAccountId, needed, sourceAcc.currencyId, -1);
         }
       }
 
@@ -128,7 +203,7 @@ function attachTableActions(tableId, entity, handlers) {
             loan.currencyId || targetAcc.currencyId,
             targetAcc.currencyId
           );
-          targetAcc.balance += delta;
+          applyBalanceDelta(loan.toAccountId, delta, targetAcc.currencyId, 1);
         }
       }
 
@@ -151,10 +226,59 @@ renderAll();
 
     }
 
+    else if (button.dataset.action === "delete" && entity === "account") {
+      const account = findAccount(id);
+      if (!account) return;
+      const children = getAccountChildren(account.id);
+      const hasChildFunds = children.some((child) => Number(child.balance || 0) !== 0);
+      if (Number(account.balance || 0) !== 0 || hasChildFunds) {
+        alert("На рахунку ще є кошти. Видалення неможливе.");
+        return;
+      }
+      if (!confirm("Видалити рахунок?")) return;
+      const idsToRemove = [account.id, ...children.map((child) => child.id)];
+      state.accounts = state.accounts.filter((acc) => !idsToRemove.includes(acc.id));
+      state.expenses = state.expenses.filter((expense) => !idsToRemove.includes(expense.accountId));
+      state.income = state.income.filter((entry) => !idsToRemove.includes(entry.accountId));
+      
+saveState();
+const activeView = document.querySelector(".app-nav button.active")?.dataset.view;
+if (activeView) {
+  const select = document.querySelector(`#${activeView.slice(0, -1)}-currency`);
+  if (select) rememberCurrency(activeView, select.value);
+}
+renderAll();
+
+    }
+
     else if (button.dataset.action === "delete") {
       handlers.delete(id);
     }
   });
+}
+
+function applyBalanceDelta(accountId, amount, currencyId, sign) {
+  const acc = findAccount(accountId);
+  if (!acc) return;
+  const accCurrency = acc.currencyId;
+  const delta = convertAmountBetweenCurrencies(
+    Number(amount || 0),
+    currencyId || accCurrency,
+    accCurrency
+  ) * sign;
+  acc.balance += delta;
+
+  if (acc.parentId) {
+    const parent = findAccount(acc.parentId);
+    if (parent) {
+      const parentDelta = convertAmountBetweenCurrencies(
+        delta,
+        accCurrency,
+        parent.currencyId || accCurrency
+      );
+      parent.balance += parentDelta;
+    }
+  }
 }
 
 function initMembers() {
@@ -192,13 +316,33 @@ renderAll();
 }
 
 function initAccounts() {
-  handleFormSubmit("account-form", "accounts", (values) => ({
-    name: (values["account-name"] || "").trim(),
-    owner: values["account-owner"],
-    balance: Number(values["account-balance"] || 0),
-    currencyId: values["account-currency"],
-    note: (values["account-note"] || "").trim(),
-  }));
+  handleFormSubmit(
+    "account-form",
+    "accounts",
+    (values) => ({
+      name: (values["account-name"] || "").trim(),
+      owner: values["account-owner"],
+      balance: Number(values["account-balance"] || 0),
+      currencyId: values["account-currency"],
+      note: (values["account-note"] || "").trim(),
+    }),
+    (previous, next) => {
+      if (!next) return;
+      if (next.parentId) {
+        const parent = findAccount(next.parentId);
+        if (parent) {
+          next.currencyId = parent.currencyId;
+        }
+        updateParentBalance(next.parentId);
+      } else if (hasSubaccounts(next.id)) {
+        const children = getAccountChildren(next.id);
+        children.forEach((child) => {
+          child.currencyId = next.currencyId;
+        });
+        updateParentBalance(next.id);
+      }
+    }
+  );
 
   attachCancel("account-cancel-btn", "account-form");
 
@@ -211,8 +355,10 @@ function initAccounts() {
       document.getElementById("account-owner").value = account.owner;
       document.getElementById("account-balance").value = account.balance;
       if (document.getElementById("account-currency")) {
+        const parent = account.parentId ? findAccount(account.parentId) : null;
+        const currencyId = account.parentId ? parent?.currencyId : account.currencyId;
         document.getElementById("account-currency").value =
-          account.currencyId || state.baseCurrencyId || getBaseCurrency().id;
+          currencyId || state.baseCurrencyId || getBaseCurrency().id;
       }
       document.getElementById("account-note").value = account.note || "";
       setActiveView("accounts");
@@ -234,6 +380,21 @@ renderAll();
 
     },
   });
+
+  const accountsTable = document.getElementById("accounts-table");
+  if (accountsTable) {
+    accountsTable.addEventListener("click", (event) => {
+      const toggleCell = event.target.closest("[data-account-toggle=\"true\"]");
+      if (!toggleCell) return;
+      if (event.target.closest("button")) return;
+      const row = toggleCell.closest("tr");
+      if (!row || !row.classList.contains("account-parent-row")) return;
+      const accountId = row.dataset.accountId;
+      if (!accountId) return;
+      accountExpandedState[accountId] = !isAccountExpanded(accountId);
+      renderAccounts();
+    });
+  }
 }
 
 function initExpenses() {
@@ -253,14 +414,7 @@ function initExpenses() {
     (previous, next) => {
       const applyEffect = (expense, sign) => {
         if (!expense) return;
-        const acc = findAccount(expense.accountId);
-        if (!acc) return;
-        const delta = convertAmountBetweenCurrencies(
-          Number(expense.amount || 0),
-          expense.currencyId || acc.currencyId,
-          acc.currencyId
-        );
-        acc.balance += -delta * sign;
+        applyBalanceDelta(expense.accountId, expense.amount, expense.currencyId, -1 * sign);
       };
       if (previous) applyEffect(previous, -1);
       if (next) applyEffect(next, 1);
@@ -303,15 +457,7 @@ function initExpenses() {
       if (!confirm("Видалити витрату?")) return;
       const expense = state.expenses.find((item) => item.id === id);
       if (expense) {
-        const acc = findAccount(expense.accountId);
-        if (acc) {
-          const delta = convertAmountBetweenCurrencies(
-            Number(expense.amount || 0),
-            expense.currencyId || acc.currencyId,
-            acc.currencyId
-          );
-          acc.balance += delta;
-        }
+        applyBalanceDelta(expense.accountId, expense.amount, expense.currencyId, 1);
       }
       state.expenses = state.expenses.filter((item) => item.id !== id);
       
@@ -344,14 +490,7 @@ function initIncome() {
     (previous, next) => {
       const applyEffect = (entry, sign) => {
         if (!entry) return;
-        const acc = findAccount(entry.accountId);
-        if (!acc) return;
-        const delta = convertAmountBetweenCurrencies(
-          Number(entry.amount || 0),
-          entry.currencyId || acc.currencyId,
-          acc.currencyId
-        );
-        acc.balance += delta * sign;
+        applyBalanceDelta(entry.accountId, entry.amount, entry.currencyId, sign);
       };
       if (previous) applyEffect(previous, -1);
       if (next) applyEffect(next, 1);
@@ -384,15 +523,7 @@ function initIncome() {
       if (!confirm("Видалити дохід?")) return;
       const entry = state.income.find((item) => item.id === id);
       if (entry) {
-        const acc = findAccount(entry.accountId);
-        if (acc) {
-          const delta = convertAmountBetweenCurrencies(
-            Number(entry.amount || 0),
-            entry.currencyId || acc.currencyId,
-            acc.currencyId
-          );
-          acc.balance -= delta;
-        }
+        applyBalanceDelta(entry.accountId, entry.amount, entry.currencyId, -1);
       }
       state.income = state.income.filter((item) => item.id !== id);
       
@@ -415,25 +546,9 @@ function applyLoanBalanceEffect(loan, sign) {
   if (!amount) return;
 
   if (loan.direction === "lend" && loan.fromAccountId) {
-    const acc = findAccount(loan.fromAccountId);
-    if (acc) {
-      const delta = convertAmountBetweenCurrencies(
-        amount,
-        loan.currencyId || acc.currencyId,
-        acc.currencyId
-      );
-      acc.balance += -delta * sign;
-    }
+    applyBalanceDelta(loan.fromAccountId, amount, loan.currencyId, -1 * sign);
   } else if (loan.direction === "owe" && loan.toAccountId) {
-    const acc = findAccount(loan.toAccountId);
-    if (acc) {
-      const delta = convertAmountBetweenCurrencies(
-        amount,
-        loan.currencyId || acc.currencyId,
-        acc.currencyId
-      );
-      acc.balance += delta * sign;
-    }
+    applyBalanceDelta(loan.toAccountId, amount, loan.currencyId, 1 * sign);
   }
 }
 
@@ -618,8 +733,8 @@ function initTransfers() {
       }
     }
 
-    fromAcc.balance -= amount;
-    toAcc.balance += amount * rate;
+    applyBalanceDelta(fromId, amount, fromAcc.currencyId, -1);
+    applyBalanceDelta(toId, amount * rate, toAcc.currencyId, 1);
 
     
 saveState();

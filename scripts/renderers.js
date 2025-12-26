@@ -1,4 +1,4 @@
-function renderMembers() {
+﻿function renderMembers() {
   const tbody = document.getElementById("members-table");
   tbody.innerHTML = state.members
     .map(
@@ -78,7 +78,7 @@ function renderExpenses() {
     	  <tr>
     		<td data-label="Дата">${item.date}</td>
     		<td data-label="Член">${member?.name ?? "Невідомо"}</td>
-    		<td data-label="Рахунок">${account?.name ?? "Невідомо"}</td>
+    		<td data-label="Рахунок">${getAccountLabel(account)}</td>
     		<td data-label="Категорія">${item.category}</td>
     		<td data-label="Підкатегорія">${item.subcategory || "—"}</td>
     		<td data-label="Опис">${item.description || "—"}</td>
@@ -133,7 +133,7 @@ function renderIncome() {
           <td data-label="Дата">${item.date}</td>
           <td data-label="Джерело">${item.source}</td>
           <td data-label="Член">${member?.name ?? "Невідомо"}</td>
-          <td data-label="Рахунок">${account?.name ?? "Невідомо"}</td>
+          <td data-label="Рахунок">${getAccountLabel(account)}</td>
           <td data-label="Опис">${item.description || "—"}</td>
           <td data-label="Валюта">${currency.code}</td>
           <td data-label="Сума">${formatMoney(item.amount, currency.code)}</td>
@@ -210,7 +210,7 @@ function renderLoans() {
 function renderReports() {
   const reportCards = document.getElementById("report-cards");
   const baseCurrency = getBaseCurrency();
-  const totalBalance = state.accounts.reduce(
+  const totalBalance = getMainAccounts().reduce(
     (sum, account) => sum + convertToBase(account.balance || 0, account.currencyId),
     0
   );
@@ -245,28 +245,30 @@ function renderReports() {
     </div>
   `;
 
-  const memberSummary = {};
-  state.members.forEach((member) => {
-    memberSummary[member.id] = { income: 0, expense: 0 };
+  const memberBalances = {};
+  const accountsForSummary = [];
+  getMainAccounts().forEach((account) => {
+    const children = getAccountChildren(account.id);
+    if (children.length) {
+      accountsForSummary.push(...children);
+    } else {
+      accountsForSummary.push(account);
+    }
   });
-  state.income.forEach((entry) => {
-    if (!memberSummary[entry.memberId]) memberSummary[entry.memberId] = { income: 0, expense: 0 };
-    memberSummary[entry.memberId].income += convertToBase(entry.amount || 0, entry.currencyId);
-  });
-  state.expenses.forEach((entry) => {
-    if (!memberSummary[entry.memberId]) memberSummary[entry.memberId] = { income: 0, expense: 0 };
-    memberSummary[entry.memberId].expense += convertToBase(entry.amount || 0, entry.currencyId);
+
+  accountsForSummary.forEach((account) => {
+    const ownerId = account.owner || SHARED_OWNER_ID;
+    if (!memberBalances[ownerId]) memberBalances[ownerId] = 0;
+    memberBalances[ownerId] += convertToBase(account.balance || 0, account.currencyId);
   });
 
   const memberList = document.getElementById("report-members");
-  memberList.innerHTML = Object.entries(memberSummary)
-    .map(([memberId, stats]) => {
-      const member = findMember(memberId);
-      return `<li>
-        ${member?.name ?? "Невідомо"} — ${formatMoney(stats.income - stats.expense)} (дохід ${formatMoney(
-        stats.income
-      )}, витрати ${formatMoney(stats.expense)})
-      </li>`;
+  memberList.innerHTML = Object.entries(memberBalances)
+    .map(([memberId, amount]) => {
+      const member =
+        memberId === SHARED_OWNER_ID ? findMember(SHARED_OWNER_ID) : findMember(memberId);
+      const name = member?.name || "�������";
+      return `<li>${name} :&nbsp; ${formatMoney(amount, baseCurrency.code)}</li>`;
     })
     .join("");
 
@@ -329,6 +331,77 @@ function renderLoanCounterpartyOptions() {
   list.innerHTML = parties.map(p => `<option value="${p}">`).join("");
 }
 
+function isAccountExpanded(accountId) {
+  if (accountExpandedState[accountId] === undefined) {
+    accountExpandedState[accountId] = true;
+  }
+  return accountExpandedState[accountId];
+}
+
+function renderAccounts() {
+  const tbody = document.getElementById("accounts-table");
+  const rows = [];
+
+  const mainAccounts = getMainAccounts();
+  mainAccounts.forEach((account) => {
+    const children = getAccountChildren(account.id);
+    const expanded = children.length ? isAccountExpanded(account.id) : false;
+    rows.push(renderAccountRow(account, false, children.length, expanded));
+    if (expanded) {
+      children.forEach((child) => {
+        rows.push(renderAccountRow(child, true));
+      });
+    }
+  });
+
+  tbody.innerHTML = rows.join("");
+}
+
+function renderAccountRow(account, isSubaccount, childCount = 0, isExpanded = false) {
+  const owner = findMember(account.owner);
+  const currency = findCurrency(account.currencyId) || getBaseCurrency();
+  const hasChildren = !isSubaccount && childCount > 0;
+  const rowClass = [
+    isSubaccount ? "subaccount-row" : "",
+    hasChildren ? "account-parent-row" : "",
+    hasChildren && !isExpanded ? "account-collapsed" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const actions = isSubaccount
+    ? `
+        <button data-action="edit">Редагувати</button>
+        <button data-action="delete-subaccount" class="danger">-</button>
+      `
+    : `
+        <button data-action="edit">Редагувати</button>
+        <button data-action="add-subaccount" class="ghost">+</button>
+        <button data-action="delete" class="danger">Видалити</button>
+      `;
+
+  const nameCell = hasChildren
+    ? `
+        <td data-label="Назва" class="account-name-cell" data-account-toggle="true">
+          <span class="account-name-wrap">${account.name} <span class="account-children-count">(${childCount})</span></span>
+        </td>
+      `
+    : `
+        <td data-label="Назва"><span class="account-name-wrap">${account.name}</span></td>
+      `;
+
+  return `
+      <tr class="${rowClass}" data-account-id="${account.id}">
+        ${nameCell}
+        <td data-label="Власник">${owner?.name ?? "Невідомо"}</td>
+        <td data-label="Валюта">${currency.code}</td>
+        <td data-label="Баланс">${formatMoney(account.balance, currency.code)}</td>
+        <td data-label="Замітки">${account.note || "—"}</td>
+        <td data-label="Дії" data-entity="account" data-id="${account.id}" class="table-actions">
+          ${actions}
+        </td>
+      </tr>`;
+}
+
 function renderAll() {
   setCurrencyFromMemory("account-currency", "accounts");
   setCurrencyFromMemory("expense-currency", "expenses");
@@ -373,3 +446,6 @@ function renderExpenseSubcategoryFilterOptions() {
   const values = [...new Set(state.expenses.map(e => e.subcategory).filter(Boolean))];
   el.innerHTML = values.map(v => `<option value="${v}">`).join("");
 }
+
+
+
