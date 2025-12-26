@@ -9,7 +9,6 @@
   <link href="styles/base.css" rel="stylesheet">
   <link href="styles/mobile.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<link rel="manifest" href="manifest.json">
 	<meta name="theme-color" content="#00bcd4">
  </head>
  <body>
@@ -775,10 +774,22 @@
  
 <!-- <script>document.addEventListener('DOMContentLoaded', () => { loadDB(); });</script> -->
 	<script>
-	  if ("serviceWorker" in navigator) {
+	  const shouldUsePwa = location.protocol === "http:" || location.protocol === "https:";
+	  if (shouldUsePwa) {
+		const manifest = document.createElement("link");
+		manifest.rel = "manifest";
+		manifest.href = "manifest.json";
+		document.head.appendChild(manifest);
+	  }
+	  const isSwAllowed =
+		"serviceWorker" in navigator &&
+		(location.protocol === "https:" ||
+		  location.hostname === "localhost" ||
+		  location.hostname === "127.0.0.1");
+	  if (isSwAllowed) {
 		navigator.serviceWorker.register("service-worker.js")
-		  .then(reg => console.log("Service Worker зареєстрований", reg))
-		  .catch(err => console.error("Service Worker помилка", err));
+		  .then(() => console.log("Service Worker registered"))
+		  .catch(err => console.error("Service Worker registration failed", err));
 	  }
 	</script>
 </body>
